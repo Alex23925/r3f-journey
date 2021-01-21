@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react'
 import { MeshProps, useFrame} from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from './CameraControls'
-
 const Box: React.FC<MeshProps> = (props) => {
     // This reference will give us direct access to the mesh
     const mesh = useRef<Mesh>()
