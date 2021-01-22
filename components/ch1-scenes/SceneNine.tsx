@@ -5,6 +5,15 @@ import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
 
 const Box: React.FC<MeshProps> = (props) => {
+
+    const posititonArray = new Float32Array([
+        0,0,0,
+        0,1,0,
+        1,0,1,
+    ])
+    
+    const positionAttribute = new THREE.BufferAttribute(posititonArray, 3)
+
     // This reference will give us direct access to the mesh
     const mesh = useRef<Mesh>()
 
@@ -13,9 +22,9 @@ const Box: React.FC<MeshProps> = (props) => {
     const [active, setActive] = useState(false)
 
     // Rotate mesh every frame, this is outside of React without overhead
-    useFrame(() => {
-        if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01
-    })
+    // useFrame(() => {
+    //     if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.01
+    // })
 
     return (
         // threejs version looks like:
@@ -31,7 +40,7 @@ const Box: React.FC<MeshProps> = (props) => {
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}
         >
-            <boxBufferGeometry attach="geometry" args={[1, 1, 1, 2, 2, 3]} />
+            <bufferGeometry  />
             <meshStandardMaterial wireframe={true} color={hovered ? 'yellow' : 'red'} />
         </mesh>
     )
@@ -40,24 +49,47 @@ const Box: React.FC<MeshProps> = (props) => {
 
 export default function SceneNine() {
     // Vertices
-    const vertices = [[0,0,0], [0,1,0], [1,0,0]]
-    const faces = [[0,1,2]]
+    let vertices: number[][] = [];
+
+    // Faces
+    const faces: number[][] = []
     
+    for(let i = 0; i < 50; i++) {
+        for(let j = 0; j < 3; j++) {
+            vertices.push([
+                (Math.random() - .5) * 4, 
+                (Math.random() - .5) * 4, 
+                (Math.random() - .5) * 4])
+        }
+
+        const verticesIndex = i * 3
+        faces.push(
+            [verticesIndex,
+            verticesIndex + 1,
+            verticesIndex + 2]
+        )
+
+    }
+
+    
+
     return (
         <>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            {/* <Box position={[0, 0, 0]} /> */}
-            <mesh>
+            <Box position={[0, 0, 0]} />
+            {/* <mesh>
                 <geometry
                 vertices={vertices.map(v => new THREE.Vector3(...v))}
+                // ts error saying i am not passing enough arguments
+                // when I am
                 faces={faces.map(f => new THREE.Face3(...f))}
                 />
                 <meshStandardMaterial
                     wireframe={true} 
                     color={'red'} 
                  />
-            </mesh>
+            </mesh> */}
             <CameraControls />
         </>
     )
