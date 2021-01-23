@@ -5,15 +5,6 @@ import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
 
 const Box: React.FC<MeshProps> = (props) => {
-
-    const posititonArray = new Float32Array([
-        0,0,0,
-        0,1,0,
-        1,0,1,
-    ])
-    
-    const positionAttribute = new THREE.BufferAttribute(posititonArray, 3)
-
     // This reference will give us direct access to the mesh
     const mesh = useRef<Mesh>()
 
@@ -27,7 +18,7 @@ const Box: React.FC<MeshProps> = (props) => {
     // })
 
     return (
-        // threejs version looks like:
+        // THREEJS version looks like:
         // const geom = new THREE.BoxGeometry
         // const mat = new THREE.MeshBasicMaterial
         // const mesh = new THREE.Mesh(geom, mat)
@@ -35,17 +26,51 @@ const Box: React.FC<MeshProps> = (props) => {
         <mesh
             {...props}
             ref={mesh}
+
             scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
             onClick={(event) => setActive(!active)}
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}
         >
-            <bufferGeometry  />
-            <meshStandardMaterial wireframe={true} color={hovered ? 'yellow' : 'red'} />
+            <boxBufferGeometry args={[1, 1, 1]} />
+            <meshBasicMaterial wireframe={true} color={hovered ? 'yellow' : 'red'} />
         </mesh>
     )
 }
 
+const Geometry: React.FC<MeshProps> = () => {
+
+    const count = 500
+    // Multiplying by 3  twice b/c each triangle need three vertices which need 3 values(x,y,z)
+    const positionArray = new Float32Array(count * 3 * 3)
+
+    for(let i = 0; i < count * 3 * 3; i++){
+        positionArray[i] = Math.random() - .5
+    }
+
+    const positionAttribute = useMemo(() => {
+        const posAttribute = new THREE.BufferAttribute(positionArray, 3)
+        return posAttribute
+    }, [positionArray]) 
+
+    const geometry = useMemo(() => {
+        const geometry = new THREE.BufferGeometry()
+        return geometry
+    },[positionAttribute])
+
+    geometry.setAttribute('position', positionAttribute)
+
+    return (
+        // THREEJS version looks like:
+        // const geom = new THREE.BoxGeometry
+        // const mat = new THREE.MeshBasicMaterial
+        // const mesh = new THREE.Mesh(geom, mat)
+
+        <mesh geometry={geometry} >
+            <meshBasicMaterial wireframe={true} color={'blue'} />
+        </mesh>
+    )
+}
 
 export default function SceneNine() {
     // Vertices
@@ -53,31 +78,30 @@ export default function SceneNine() {
 
     // Faces
     const faces: number[][] = []
-    
-    for(let i = 0; i < 50; i++) {
-        for(let j = 0; j < 3; j++) {
+
+    for (let i = 0; i < 50; i++) {
+        for (let j = 0; j < 3; j++) {
             vertices.push([
-                (Math.random() - .5) * 4, 
-                (Math.random() - .5) * 4, 
+                (Math.random() - .5) * 4,
+                (Math.random() - .5) * 4,
                 (Math.random() - .5) * 4])
         }
 
         const verticesIndex = i * 3
         faces.push(
             [verticesIndex,
-            verticesIndex + 1,
-            verticesIndex + 2]
+                verticesIndex + 1,
+                verticesIndex + 2]
         )
 
     }
 
-    
+
 
     return (
         <>
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
-            <Box position={[0, 0, 0]} />
+            {/* <Box position={[0, 0, 0]} /> */}
+            <Geometry />
             {/* <mesh>
                 <geometry
                 vertices={vertices.map(v => new THREE.Vector3(...v))}

@@ -1,6 +1,7 @@
 import { ReactNode } from "react"
 import React, { useState, useEffect } from 'react'
 import { Canvas } from 'react-three-fiber'
+import "../styles/home.scss"
 
 interface CanvasLayoutProps {
     children: ReactNode
@@ -54,7 +55,8 @@ export default function CanvasLayout({children} : CanvasLayoutProps) {
         width: typeof window !== undefined ? width : undefined,
         height: typeof window !== undefined ? height : undefined
     }
-
+    // Aspect
+    let aspectRatio = width / height
 
     return(
     <>
@@ -62,6 +64,8 @@ export default function CanvasLayout({children} : CanvasLayoutProps) {
         className="webgl"
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
+        camera={{ position: [0, 0, 3], aspect: aspectRatio, near: .1, far: 100 }}
+        
       >
           {children}
       </Canvas>
