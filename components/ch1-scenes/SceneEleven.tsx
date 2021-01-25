@@ -1,12 +1,15 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { MeshProps, useFrame } from 'react-three-fiber'
+import React, { useRef, useState, useMemo } from 'react'
+import { MeshProps, useFrame, useLoader } from 'react-three-fiber'
+import * as THREE from 'three'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
+
+import img from '../../static/color.jpg'
 
 interface SceneProps {
     elevation: number,
     color: string,
-    hoverColor:string,
+    hoverColor: string,
     wireframe: boolean
 }
 
@@ -18,6 +21,10 @@ interface BoxProps {
 }
 
 const Box = (props: BoxProps) => {
+    // Textures
+    const texture = useLoader(THREE.TextureLoader, img)
+    
+
     let elevation = props.elevation
     let color = props.color
     let hoverColor = props.hoverColor
@@ -35,13 +42,13 @@ const Box = (props: BoxProps) => {
     return (
         <mesh
             ref={mesh}
-            position={[0, elevation ,0]}
+            position={[0, elevation, 0]}
             scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
             onClick={(event) => setActive(!active)}
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
             <boxBufferGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial wireframe={props.wireframe} color={hovered ? hoverColor : color} />
+            <meshBasicMaterial attach="material" map={texture} />
         </mesh>
     )
 }
@@ -51,11 +58,11 @@ export default function SceneTen(props: SceneProps) {
         <>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box 
-                elevation={props.elevation} 
-                color={props.color} 
-                hoverColor={props.hoverColor} 
-                wireframe={props.wireframe}  
+            <Box
+                elevation={props.elevation}
+                color={props.color}
+                hoverColor={props.hoverColor}
+                wireframe={props.wireframe}
             />
             <CameraControls />
         </>

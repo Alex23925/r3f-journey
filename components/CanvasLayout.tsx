@@ -28,25 +28,25 @@ export default function CanvasLayout({children} : CanvasLayoutProps) {
     })
 
     // FullScreen Logic
-    window.addEventListener('dblclick', () => {
-      // Have yet to find a solution to stop complaining 
-      // about element not having the property webkitFullscreenElement
+    // window.addEventListener('dblclick', () => {
+    //   // Have yet to find a solution to stop complaining 
+    //   // about element not having the property webkitFullscreenElement
 
-      const document: any = window.document
-      const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
+    //   const document: any = window.document
+    //   const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
 
-      if (!fullscreenElement) {
-        if (canvas?.requestFullscreen) {
-          canvas.requestFullscreen()
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen()
-        } else if (document.webkitExitFullscreen) {
-          document.exitFullscreen()
-        }
-      }
-    })
+    //   if (!fullscreenElement) {
+    //     if (canvas?.requestFullscreen) {
+    //       canvas.requestFullscreen()
+    //     }
+    //   } else {
+    //     if (document.exitFullscreen) {
+    //       document.exitFullscreen()
+    //     } else if (document.webkitExitFullscreen) {
+    //       document.exitFullscreen()
+    //     }
+    //   }
+    // })
 
     }, []);
 
