@@ -22,8 +22,9 @@ interface BoxProps {
 
 const Box = (props: BoxProps) => {
     // Textures
-    const texture = useLoader(THREE.TextureLoader, img)
-    
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), [img])
+    const texture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img), [img])
+
 
     let elevation = props.elevation
     let color = props.color
