@@ -5,6 +5,13 @@ import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
 
 import img from '../../static/color.jpg'
+import img1 from '../../static/textures/door/alpha.jpg'
+import img2 from '../../static/textures/door/height.jpg'
+import img3 from '../../static/textures/door/normal.jpg'
+import img4 from '../../static/textures/door/ambientOcclusion.jpg'
+import img5 from '../../static/textures/door/metalness.jpg'
+import img6 from '../../static/textures/door/roughness.jpg'
+
 
 interface SceneProps {
     elevation: number,
@@ -22,9 +29,33 @@ interface BoxProps {
 
 const Box = (props: BoxProps) => {
     // Textures
-    const loadingManager = useMemo(() => new THREE.LoadingManager(), [img])
-    const texture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img), [img])
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
+    loadingManager.onStart = () => {
+        console.log('onStart')
+    }
 
+    loadingManager.onLoad = () => {
+        console.log('onLoaded')
+    }
+
+    loadingManager.onProgress = () => {
+        console.log('onProgress')
+    }
+
+    loadingManager.onError = () => {
+        console.log('onError')
+    }
+
+    const colorTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img), [img])
+    const alphaTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img1), [img1])
+    const heightTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img2), [img2])
+    const normalTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img3), [img3])
+    const ambientOcclusionTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img4), [img4])
+    const metalnessTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img5), [img5])
+    const roughnessTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(img6), [img6])
+
+    // colorTexture.generateMipmaps = false
+    colorTexture.magFilter = THREE.NearestFilter
 
     let elevation = props.elevation
     let color = props.color
@@ -49,7 +80,7 @@ const Box = (props: BoxProps) => {
             onPointerOver={(event) => setHover(true)}
             onPointerOut={(event) => setHover(false)}>
             <boxBufferGeometry args={[1, 1, 1]} />
-            <meshBasicMaterial attach="material" map={texture} />
+            <meshBasicMaterial attach="material" map={colorTexture} />
         </mesh>
     )
 }
