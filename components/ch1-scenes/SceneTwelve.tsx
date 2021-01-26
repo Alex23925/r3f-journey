@@ -14,7 +14,7 @@ interface BoxProps {
     elevation: number,
     color: string,
     hoverColor: string,
-    wireframe: boolean
+    wireframe: boolean,
 }
 
 const Box = (props: BoxProps) => {
@@ -46,17 +46,74 @@ const Box = (props: BoxProps) => {
     )
 }
 
+
 export default function SceneTwelve(props: SceneProps) {
+    
+    // Refs
+    const sphereRef = useRef<Mesh>()
+    const planeRef = useRef<Mesh>()
+    const torusRef = useRef<Mesh>()
+    // Material
+    const material = <meshBasicMaterial color={props.color} />
+    
+    // Meshes
+    const sphere = 
+        <mesh ref={sphereRef} position={[-1.5,0,0]} >
+            <sphereBufferGeometry args={[.5, 16, 16]} />
+            {material}
+        </mesh>
+
+    const plane = 
+        <mesh ref={planeRef} >
+            <planeBufferGeometry args={[1,1]} />
+            {material}
+        </mesh>
+
+    const torus = 
+        <mesh ref={torusRef} position={[1.5, 0, 0]} >
+            <torusBufferGeometry args={[.3, .2, 16, 32]} />
+            {material}
+        </mesh>
+
+    // Animation
+    useFrame((state) => {
+        let time = state.clock.getElapsedTime()
+
+        if(sphereRef?.current) {
+            sphereRef.current.rotation.y = .15 * time
+        }
+        if(planeRef?.current) {
+            planeRef.current.rotation.y = .15 * time
+        }
+        if(torusRef?.current) {
+            torusRef.current.rotation.y = .15 * time
+        }
+
+        if (sphereRef?.current) {
+            sphereRef.current.rotation.x = .15 * time
+        }
+        if (planeRef?.current) {
+            planeRef.current.rotation.x = .15 * time
+        }
+        if (torusRef?.current) {
+            torusRef.current.rotation.x = .15 * time
+        }
+
+    })
+    
     return (
         <>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box 
+            {/* <Box 
                 elevation={props.elevation} 
                 color={props.color} 
                 hoverColor={props.hoverColor} 
                 wireframe={props.wireframe}  
-            />
+            /> */}
+            {sphere}
+            {plane}
+            {torus}
             <CameraControls />
         </>
     )
