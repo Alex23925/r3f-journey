@@ -15,7 +15,9 @@ export default function materials12() {
         visible: true,
         wireframe: false,
         color: "#AC2E2E",
-        hoverColor: "#1B3EA4"
+        hoverColor: "#1B3EA4",
+        metalness: 0,
+        roughness: 0,
     })
 
 

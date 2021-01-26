@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { MeshProps, useFrame } from 'react-three-fiber'
-import type { Mesh } from 'three'
+import { Material, Mesh } from 'three'
 import * as THREE from 'three'
 import CameraControls from '../CameraControls'
 
@@ -33,6 +33,7 @@ interface BoxProps {
 export default function SceneTwelve(props: SceneProps) {
 
     // Refs
+    const materialRef = useRef<Material>()
     const sphereRef = useRef<Mesh>()
     const planeRef = useRef<Mesh>()
     const torusRef = useRef<Mesh>()
@@ -76,7 +77,8 @@ export default function SceneTwelve(props: SceneProps) {
     const doorNormalTexture = textureLoader.load(normalImg)
     const matcapTexture = textureLoader.load(matcap)
     const gradientTexture = textureLoader.load(gradient)
-
+    gradientTexture.minFilter = THREE.NearestFilter
+    gradientTexture.magFilter = THREE.NearestFilter
     
 
 
@@ -90,7 +92,10 @@ export default function SceneTwelve(props: SceneProps) {
     //                     color={props.color}
     //                  />
 
-    const material = <meshNormalMaterial />
+    const material = <meshToonMaterial 
+                        ref={materialRef}
+                        gradientMap={gradientTexture}
+                        color={props.color} />
 
     // Meshes
     const sphere =
@@ -132,8 +137,9 @@ export default function SceneTwelve(props: SceneProps) {
 
     return (
         <>
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
+            <ambientLight /> 
+            <pointLight intensity={.5} position={[2, 3, 4]} />
+            
             {sphere}
             {plane}
             {torus}
