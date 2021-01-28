@@ -14,10 +14,12 @@ export default function materials12() {
         elevation: 0,
         visible: true,
         wireframe: false,
-        color: "#AC2E2E",
+        color: "#FFFFFF",
         hoverColor: "#1B3EA4",
-        metalness: 0,
-        roughness: 0,
+        metalness: 0.7,
+        roughness: 0.2,
+        aoIntensity: 0,
+        displacementScale: 0,
     })
 
 
@@ -34,6 +36,10 @@ export default function materials12() {
                         wireframe={params.wireframe} 
                         color={params.color} 
                         hoverColor={params.hoverColor} 
+                        metalness={params.metalness}
+                        roughness={params.roughness}
+                        aoIntensity={params.aoIntensity}
+                        displacementScale={params.displacementScale}
                     />
                 </CanvasLayout>
 
@@ -41,7 +47,11 @@ export default function materials12() {
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />
-                    <DatBoolean path='wireframe' label='wireframe' />
+                    <DatBoolean path="wireframe" label="wireframe" />
+                    <DatNumber path="metalness"  label="metalness" min={0} max={1} step={.0001} />
+                    <DatNumber path="roughness" label="roughness" min={0} max={1} step={.0001} />
+                    <DatNumber path="aoIntensity" label="ambient occlusion intensity" min={0} max={10} step={.0001} />
+                    <DatNumber path="displacementScale" label="displacement Scale" min={0} max={1} step={.001} />
                 </DatGui>
 
             </Layout>
