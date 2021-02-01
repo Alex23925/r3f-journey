@@ -1,12 +1,12 @@
 import Layout from '../components/Layout'
 import CanvasLayout from '../components/CanvasLayout'
-import SceneTen from '../components/ch1-scenes/SceneTen'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
 import React, { useState } from 'react'
 // NOTE
 // DatGUI missing styling so have to import it
 // If using scss go to that file path and change the css extension to scss
 import 'react-dat-gui/dist/index.scss'
+import SceneThirteen from '../components/ch1-scenes/SceneThirteen';
 
 export default function text13() {
     // State
@@ -27,7 +27,7 @@ export default function text13() {
                 chNum={1}
             >
                 <CanvasLayout>
-                    <SceneTen
+                    <SceneThirteen
                         elevation={params.elevation}
                         wireframe={params.wireframe}
                         color={params.color}

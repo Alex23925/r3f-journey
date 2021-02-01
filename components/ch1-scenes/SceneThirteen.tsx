@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { MeshProps, useFrame } from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
+import * as THREE from 'three'
 
 interface SceneProps {
     elevation: number,
@@ -47,16 +48,56 @@ const Box = (props: BoxProps) => {
 }
 
 export default function SceneThirteen(props: SceneProps) {
+    // Refs
+    const textRef= useRef<Mesh>()
+
+    // Fonts
+    const fontLoader = useMemo(() => new THREE.FontLoader, [])
+
+    const font1 = '../../static/fonts/helvetiker_regular.typeface.json'
+
+    
+    const textMaterial = <meshBasicMaterial wireframe={props.wireframe} />
+    const text =
+        <mesh position={[-1,0,0]} ref={textRef}>
+            {textMaterial}
+        </mesh>
+
+    fontLoader.load(
+        font1,
+        (font) => {
+            console.log('font loaded')
+            const textGeometry = new THREE.TextBufferGeometry(
+            'Hello World', 
+            {
+                font: font,
+                size: 0.5,
+                height: 0.2,
+                curveSegments: 5,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 4
+            }
+            )
+            if(textRef.current) {
+                textRef.current.geometry = textGeometry
+            }
+        }
+    )
+
     return (
         <>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box
+            {/* <Box
                 elevation={props.elevation}
                 color={props.color}
                 hoverColor={props.hoverColor}
                 wireframe={props.wireframe}
-            />
+            /> */}
+            {text}
             <CameraControls />
         </>
     )
