@@ -84,7 +84,7 @@ export default function SceneThirteen(props: SceneProps) {
     const font1 = '../../static/fonts/helvetiker_regular.typeface.json'
 
     
-    const textMaterial = <meshMatcapMaterial matcap={matcapTexture} />
+    const textMaterial = <meshMatcapMaterial color={props.color} matcap={matcapTexture} />
     const text =
         <mesh position={[0,0,0]} ref={textRef}>
             {textMaterial}
@@ -119,7 +119,7 @@ export default function SceneThirteen(props: SceneProps) {
 
     // Donuts
     const donuts = []
-    const donutMaterial = <meshMatcapMaterial matcap={matcapTexture} />
+    const donutMaterial = <meshMatcapMaterial color={props.color} matcap={matcapTexture} />
     const donutGeometry = <torusBufferGeometry args={[.3, .2, 20, 45]} />
 
     for(let i = 0; i < 100; i++) {
