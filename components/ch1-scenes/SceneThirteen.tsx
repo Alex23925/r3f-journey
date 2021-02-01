@@ -116,7 +116,7 @@ export default function SceneThirteen(props: SceneProps) {
             }
         }
     )
-    
+
     // Donuts
     const donuts = []
     const donutMaterial = <meshMatcapMaterial matcap={matcapTexture} />
@@ -139,6 +139,7 @@ export default function SceneThirteen(props: SceneProps) {
 
         const donut = 
             <mesh 
+                key={i}
                 position={[x, y, z]} 
                 scale={[scale, scale, scale]} 
                 rotation={[rotateX, rotateY, 0]} 
@@ -151,6 +152,58 @@ export default function SceneThirteen(props: SceneProps) {
         donuts.push(donut)
     
     }
+
+    // Heart
+    const hearts = []
+    const x = 0, y = 0;
+    const heartShape = useMemo(() => new THREE.Shape(), [])
+    heartShape.moveTo(x + 5, y + 5);
+    heartShape.bezierCurveTo(x + 5, y + 5, x + 4, y, x, y);
+    heartShape.bezierCurveTo(x - 6, y, x - 6, y + 7, x - 6, y + 7);
+    heartShape.bezierCurveTo(x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19);
+    heartShape.bezierCurveTo(x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7);
+    heartShape.bezierCurveTo(x + 16, y + 7, x + 16, y, x + 10, y);
+    heartShape.bezierCurveTo(x + 7, y, x + 5, y + 5, x + 5, y + 5);
+
+    const extrudeSettings = { amount: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
+
+    const heartGeometry = useMemo(() => new THREE.ExtrudeGeometry(heartShape, extrudeSettings), [])
+
+    const heart = 
+        <mesh scale={[.1, .1, .1]} geometry={heartGeometry}>
+            {donutMaterial}
+        </mesh>
+
+    for (let i = 0; i < 100; i++) {
+        const heartRef = useRef<Mesh>()
+        const x = (Math.random() - .5) * 10
+        const y = (Math.random() - .5) * 10
+        const z = (Math.random() - .5) * 10
+
+        const rotateX = Math.random() * Math.PI
+        const rotateY = Math.random() * Math.PI
+
+        const scale = (.02)
+
+        useFrame(() => {
+            if (heartRef.current) heartRef.current.rotation.x = heartRef.current.rotation.y += 0.01
+        })
+
+        const heart =
+            <mesh
+                key={i}
+                position={[x, y, z]}
+                scale={[scale, scale, scale]}
+                geometry={heartGeometry}
+                ref={heartRef}
+            >
+                {donutMaterial}
+            </mesh>
+
+        hearts.push(heart)
+
+    }
+
     return (
         <>
             <ambientLight />
@@ -163,7 +216,8 @@ export default function SceneThirteen(props: SceneProps) {
             /> */}
             {text}
             {/* <axesHelper /> */}
-            {donuts}
+            {/* {donuts} */}
+            {hearts}
             <CameraControls />
         </>
     )
