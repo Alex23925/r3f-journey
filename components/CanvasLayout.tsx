@@ -62,6 +62,7 @@ export default function CanvasLayout({children} : CanvasLayoutProps) {
     <>
         <Canvas
         className="webgl"
+        shadowMap={true}
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
         camera={{ position: [0, 0, 3], aspect: aspectRatio, near: .1, far: 100 }}
