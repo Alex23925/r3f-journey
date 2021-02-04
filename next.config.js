@@ -49,7 +49,7 @@ const withImages = require('next-images')
 const { default: next } = require('next')
 
 const withTM = require('next-transpile-modules')(
-    ['three'], // '@react-three/postprocessing'
+    ['three', 'drei'], // '@react-three/postprocessing'
     { debug: debug, unstable_webpack5: false, match } // symlink-caused loops which cause memory to get bloated exponentially.
 )
 module.exports = withPlugins([
