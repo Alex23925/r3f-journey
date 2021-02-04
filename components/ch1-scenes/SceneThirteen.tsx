@@ -4,7 +4,7 @@ import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
 import * as THREE from 'three'
 
-import matcap from '../../static/textures/matcaps/7.png'
+import matcap from '../../static/textures/matcaps/4.png'
 
 interface SceneProps {
     text: string,
@@ -185,8 +185,15 @@ export default function SceneThirteen(props: SceneProps) {
 
         const scale = (.02)
 
-        useFrame(() => {
-            if (heartRef.current) heartRef.current.rotation.x = heartRef.current.rotation.y += 0.01
+        useFrame((state) => {
+            let time = state.clock.getElapsedTime()
+
+            if (heartRef.current) {
+                heartRef.current.rotation.x = heartRef.current.rotation.y += 0.01
+                
+                heartRef.current.position.x = x + Math.cos(time + x)
+                heartRef.current.position.y = y + Math.sin(time + y)
+            }
         })
 
         const heart =
@@ -194,6 +201,7 @@ export default function SceneThirteen(props: SceneProps) {
                 key={i}
                 position={[x, y, z]}
                 scale={[scale, scale, scale]}
+                rotation={[rotateX, rotateY, 0]} 
                 geometry={heartGeometry}
                 ref={heartRef}
             >
