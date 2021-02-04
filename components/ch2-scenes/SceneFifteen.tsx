@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
-import { MeshProps, useFrame, useThree } from 'react-three-fiber'
+import { MeshProps, useFrame, useThree, useResource } from 'react-three-fiber'
 import { Mesh, PointLight, PointLightHelper, DirectionalLightHelper } from 'three'
 import * as THREE from 'three'
 import CameraControls from '../CameraControls'
@@ -72,7 +72,7 @@ export default function SceneFifteen(props: SceneProps) {
     // Refs
     const lightRef = useRef()
     const directionalLightRef = useRef()
-
+    const light = useResource()
     //Helpers
     useHelper(lightRef, PointLightHelper, 0.5, props.color)
     useHelper(directionalLightRef, DirectionalLightHelper, 0.5, props.color)
@@ -97,6 +97,14 @@ export default function SceneFifteen(props: SceneProps) {
                 shadow-camera-far={50}
                 ref={lightRef}
                 position={[10, 10, 10]}
+            />
+            <pointLight
+                castShadow={true}
+                shadow-mapSize-width={1024}
+                shadow-mapSize-height={1024}
+                shadow-camera-far={50}
+                ref={light}
+                position={[-10, -10, 10]}
             />
             <directionalLight
                 castShadow={true}
