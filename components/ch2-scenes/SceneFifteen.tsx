@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { MeshProps, useFrame, useThree } from 'react-three-fiber'
-import { Mesh, PointLight, PointLightHelper, DirectionalLightHelper } from 'three'
+import { Mesh, PointLightHelper, DirectionalLightHelper, Camera } from 'three'
 import * as THREE from 'three'
 import CameraControls from '../CameraControls'
 import { useHelper } from "drei"
@@ -71,14 +71,13 @@ export default function SceneFifteen(props: SceneProps) {
 
     // Refs
     const lightRef = useRef()
-    const directionalLightRef = useRef()
+    const directionalLightRef = useRef<Camera>()
 
     //Helpers
     useHelper(lightRef, PointLightHelper, 0.5, props.color)
     useHelper(directionalLightRef, DirectionalLightHelper, 0.5, props.color)
     
     let cameraHelper
-
     useEffect(() => {
         cameraHelper = new THREE.CameraHelper(directionalLightRef.current?.shadow.camera)
         scene.add(cameraHelper)
