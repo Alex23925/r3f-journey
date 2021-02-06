@@ -3,7 +3,7 @@ import { MeshProps, useFrame, useLoader } from 'react-three-fiber'
 import * as THREE from 'three'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
-
+ 
 import img from '../../static/color.jpg'
 import img1 from '../../static/textures/door/alpha.jpg'
 import img2 from '../../static/textures/door/height.jpg'

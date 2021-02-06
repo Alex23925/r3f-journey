@@ -1,9 +1,11 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
-import { MeshProps, useFrame, useThree } from 'react-three-fiber'
-import { Mesh, PointLightHelper, DirectionalLightHelper, Camera } from 'three'
+import { MeshProps, useFrame, useThree, useResource } from 'react-three-fiber'
+import { Mesh, PointLight, PointLightHelper, DirectionalLightHelper } from 'three'
 import * as THREE from 'three'
 import CameraControls from '../CameraControls'
-import { useHelper } from "drei"
+import { useHelper } from '@react-three/drei'
+import shadow from '../../static/textures/bakedShadow.jpg'
+
 
 interface SceneProps {
     elevation: number,
@@ -66,20 +68,43 @@ const Box = (props: BoxProps) => {
 }
 
 export default function SceneFifteen(props: SceneProps) {
+
+    // Textures
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
+    loadingManager.onStart = () => {
+        console.log('onStart')
+    }
+
+    loadingManager.onLoad = () => {
+        console.log('onLoaded')
+    }
+
+    loadingManager.onProgress = () => {
+        console.log('onProgress')
+    }
+
+    loadingManager.onError = () => {
+        console.log('onError')
+    }
+
+    const bakeShadow = useMemo(() => new THREE.TextureLoader(loadingManager).load(shadow), [shadow])
+
+
     //Hooks
     const {scene} = useThree()
 
     // Refs
     const lightRef = useRef()
-    const directionalLightRef = useRef<Camera>()
+    const directionalLightRef = useRef()
+
 
     //Helpers
-    useHelper(lightRef, PointLightHelper, 0.5, props.color)
     useHelper(directionalLightRef, DirectionalLightHelper, 0.5, props.color)
     
     let cameraHelper
     useEffect(() => {
         cameraHelper = new THREE.CameraHelper(directionalLightRef.current?.shadow.camera)
+        cameraHelper.visible = false
         scene.add(cameraHelper)
     }, [])
 
@@ -89,21 +114,18 @@ export default function SceneFifteen(props: SceneProps) {
     return (
         <>
             <ambientLight intensity={.5} />
-            <pointLight
-                castShadow={true}
-                shadow-mapSize-width={1024}
-                shadow-mapSize-height={1024}
-                shadow-camera-far={50}
-                ref={lightRef}
-                position={[10, 10, 10]}
-            />
             <directionalLight
                 castShadow={true}
                 shadow-mapSize-width={1024}
                 shadow-mapSize-height={1024}
-                shadow-camera-far={50}
+                shadow-camera-far={6}
+                shadow-camera-near={1}
+                shadow-camera-top = {2}
+                shadow-camera-right = {2}
+                shadow-camera-left = {-2}
+                shadow-camera-bottom = {-2}
                 ref={directionalLightRef}
-                position={[0, 10, 0]}
+                position={[2, 2, -1]}
             />
             <Box
                 elevation={props.elevation}
@@ -115,9 +137,9 @@ export default function SceneFifteen(props: SceneProps) {
                 aoIntensity={props.aoIntensity}
                 displacementScale={props.displacementScale}
             />
-            <mesh position={[0, -1, 0]} receiveShadow={true} rotation-x={-Math.PI * .5}>
-                <planeBufferGeometry args={[10, 8, 2]} />
-                <meshStandardMaterial />
+            <mesh position={[-1, -1, 0]} receiveShadow={true} rotation-x={-Math.PI * .5}>
+                <planeBufferGeometry args={[7, 8, 1]} />
+                <meshBasicMaterial map={bakeShadow} />
             </mesh>
             <CameraControls />
         </>
