@@ -2,12 +2,14 @@ import { ReactNode } from "react"
 import React, { useState, useEffect } from 'react'
 import { Canvas } from 'react-three-fiber'
 import "../styles/home.scss"
+import { Vector3 } from "three"
 
 interface CanvasLayoutProps {
-    children: ReactNode
+    children: ReactNode,
+    cameraPosition: Vector3,
 }
 
-export default function CanvasLayout({children} : CanvasLayoutProps) {
+export default function CanvasLayout(props : CanvasLayoutProps) {
     // Window Variables
     const [width, setWidth] = useState(0)
     const [height, setHeight] = useState(0)
@@ -65,10 +67,10 @@ export default function CanvasLayout({children} : CanvasLayoutProps) {
         shadowMap={true}
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
-        camera={{ position: [0, 0, 3], aspect: aspectRatio, near: .1, far: 100 }}
+        camera={{ position: props.cameraPosition, aspect: aspectRatio, near: .1, far: 100 }}
         
       >
-          {children}
+          {props.children}
       </Canvas>
     </>)
 
