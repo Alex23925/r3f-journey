@@ -15,12 +15,12 @@ export default function hauntedHouse16() {
         elevation: 0,
         visible: true,
         wireframe: false,
-        color: "0xff0000",
+        color: "#500EDF",
         hoverColor: "0xff0000",
-        ambientLight: 0.5,
-        moonLight: .5,
+        ambientLight: 0.12,
+        moonLight: .12,
         xPosition: 0,
-        yPosition: 0,
+        yPosition: 5,
         zPosition: 0,
     })
 
@@ -45,6 +45,7 @@ export default function hauntedHouse16() {
                     />
                 </CanvasLayout>
 
+                {/* GUI EDITOR */}
                 <DatGui data={params} onUpdate={setParams}>
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
                     <DatColor path="color" />

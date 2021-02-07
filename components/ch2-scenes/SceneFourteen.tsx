@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { MeshProps, useFrame, useResource } from 'react-three-fiber'
 import { Mesh, PointLight, PointLightHelper } from 'three'
 import CameraControls from '../CameraControls'
-import { useHelper } from "drei"
+import { useHelper } from "@react-three/drei"
 
 interface SceneProps {
     elevation: number,
