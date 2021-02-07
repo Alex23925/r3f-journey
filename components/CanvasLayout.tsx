@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { Canvas } from 'react-three-fiber'
 import "../styles/home.scss"
 import { Vector3 } from "three"
+import * as THREE from 'three'
 
 interface CanvasLayoutProps {
     children: ReactNode,
@@ -65,6 +66,7 @@ export default function CanvasLayout(props : CanvasLayoutProps) {
         <Canvas
         className="webgl"
         shadowMap={true}
+        shadowMap-type={THREE.PCFShadowMap}
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
         camera={{ position: props.cameraPosition, aspect: aspectRatio, near: .1, far: 100 }}
