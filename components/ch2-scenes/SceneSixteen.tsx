@@ -121,12 +121,12 @@ const House = (props: HouseProps) => {
             />
         </mesh>
 
-    // if (wallsRef.current) {
-    //     wallsRef.current.geometry.setAttribute(
-    //         'uv2',
-    //         new THREE.BufferAttribute(wallsRef.current.geometry.attributes.uv.array, 2))
+    if (wallsRef.current) {
+        wallsRef.current.geometry.setAttribute(
+            'uv2',
+            new THREE.BufferAttribute(wallsRef.current.geometry.attributes.uv.array, 2))
         
-    // }
+    }
     
     // Roof
     const roof = 
@@ -152,12 +152,12 @@ const House = (props: HouseProps) => {
             />
         </mesh>
 
-    // if (doorRef.current) {
-    //     doorRef.current.geometry.setAttribute(
-    //         'uv2',
-    //         new THREE.BufferAttribute(doorRef.current.geometry.attributes.uv.array, 2))
+    if (doorRef.current) {
+        doorRef.current.geometry.setAttribute(
+            'uv2',
+            new THREE.BufferAttribute(doorRef.current.geometry.attributes.uv.array, 2))
         
-    // }
+    }
 
     // Door Light
     const doorLight = <pointLight 
