@@ -121,12 +121,12 @@ const House = (props: HouseProps) => {
             />
         </mesh>
 
-    if (wallsRef.current) {
-        wallsRef.current.geometry.setAttribute(
-            'uv2',
-            new THREE.BufferAttribute(wallsRef.current.geometry.attributes.uv.array, 2))
+    // if (wallsRef.current) {
+    //     wallsRef.current.geometry.setAttribute(
+    //         'uv2',
+    //         new THREE.BufferAttribute(wallsRef.current.geometry.attributes.uv.array, 2))
         
-    }
+    // }
     
     // Roof
     const roof = 
@@ -152,12 +152,12 @@ const House = (props: HouseProps) => {
             />
         </mesh>
 
-    if (doorRef.current) {
-        doorRef.current.geometry.setAttribute(
-            'uv2',
-            new THREE.BufferAttribute(doorRef.current.geometry.attributes.uv.array, 2))
+    // if (doorRef.current) {
+    //     doorRef.current.geometry.setAttribute(
+    //         'uv2',
+    //         new THREE.BufferAttribute(doorRef.current.geometry.attributes.uv.array, 2))
         
-    }
+    // }
 
     // Door Light
     const doorLight = <pointLight 
@@ -263,12 +263,12 @@ export default function SceneSixteen(props: SceneProps) {
             />
         </mesh>
 
-    if (floorRef.current) {
-        floorRef.current.geometry.setAttribute(
-            'uv2',
-            new THREE.BufferAttribute(floorRef.current.geometry.attributes.uv.array, 2))
+    // if (floorRef.current) {
+    //     floorRef.current.geometry.setAttribute(
+    //         'uv2',
+    //         new THREE.BufferAttribute(floorRef.current.geometry.attributes.uv.array, 2))
 
-    }
+    // }
 
     //* Lights *\\
 
@@ -296,7 +296,7 @@ export default function SceneSixteen(props: SceneProps) {
     }, [])
 
     // Ghosts
-    const ghost1 = <pointLight castShadow={true} ref={ghostRef1} color={'#ff00ff'} intensity={1} distance={3} />
+    const ghost1 = <pointLight castShadow={true} ref={ghostRef1} color={'#0000ff'} intensity={1} distance={3} />
     const ghost2 = <pointLight castShadow={true} ref={ghostRef2} color={'#00ffff'} intensity={1} distance={3} />
     const ghost3 = <pointLight castShadow={true} ref={ghostRef3} color={'#ffff00'} intensity={1} distance={3} />
 

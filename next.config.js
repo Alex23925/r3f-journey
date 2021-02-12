@@ -1,6 +1,6 @@
 // next.config.js
 const path = require('path')
-
+console.log(path)
 // Code used from react-three-next starter 
 // https://github.com/pmndrs/react-three-next/blob/main/next.config.js
 
@@ -42,22 +42,18 @@ const nextConfig = {
 
 
 const withPlugins = require('next-compose-plugins');
-
 const withSass = require("@zeit/next-sass");
-
 const withImages = require('next-images')
 const { default: next } = require('next')
 
 const withTM = require('next-transpile-modules')(
     ['three', '@react-three/drei'], // '@react-three/postprocessing'
-    { debug: debug, unstable_webpack5: false, match } // symlink-caused loops which cause memory to get bloated exponentially.
+    { debug: debug, __unstable_matcher: match } // symlink-caused loops which cause memory to get bloated exponentially.
 )
-module.exports = withPlugins([
-    withImages,
-    withSass,
-    withTM], nextConfig), {
-    webpack: (config) => {
-
-    }
-}
+module.exports = withPlugins(
+    [
+        withTM(nextConfig),
+        withImages,
+        withSass,
+    ], nextConfig)
 

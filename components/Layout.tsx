@@ -69,6 +69,11 @@ export default function Layout({ lessonName, lessonNum, chNum, children }: Layou
                 <motion.section className="nav-bar nav-bar--styles">
                     <div className="link">
                         <Link href='/'>
+                            <a className="link--styles">00. Playground</a>
+                        </Link>
+                    </div>
+                    <div className="link">
+                        <Link href='/'>
                             <a className="link--styles">01. Basic Scene</a>
                         </Link>
                     </div>
