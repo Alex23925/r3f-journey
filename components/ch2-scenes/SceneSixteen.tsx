@@ -209,21 +209,10 @@ const House = (props: HouseProps) => {
     )
 }
 
-export default function SceneSixteen(props: SceneProps) {
-    const {scene} = useThree()
-
-    // Refs
-    const ambientRef = useRef()
-    const directionalRef = useRef()
+const Floor = () => {
     const floorRef = useRef<Mesh>()
-    const ghostRef1 = useRef<PointLight>()
-    const ghostRef2 = useRef<PointLight>()
-    const ghostRef3 = useRef<PointLight>()
 
-    // Helpers
-    useHelper(directionalRef, DirectionalLightHelper, 0.5, props.color)
-
-    // Grass Textures
+     // Grass Textures
     const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
 
     const grassColorTexture = useMemo(() => new THREE.TextureLoader(loadingManager).load(grassimg1), [grassimg1])
@@ -245,9 +234,15 @@ export default function SceneSixteen(props: SceneProps) {
     grassAmbientOcclusionTexture.wrapT = THREE.RepeatWrapping
     grassNormalTexture.wrapT = THREE.RepeatWrapping
     grassRoughnessTexture.wrapT = THREE.RepeatWrapping
+    
+    // if (floorRef.current) {
+    //     floorRef.current.geometry.setAttribute(
+    //         'uv2',
+    //         new THREE.BufferAttribute(floorRef.current.geometry.attributes.uv.array, 2))
 
-    // Floor
-    const floor =
+    // }
+
+    return  (
         <mesh
             receiveShadow={true}
             ref={floorRef}
@@ -262,13 +257,21 @@ export default function SceneSixteen(props: SceneProps) {
                 roughnessMap={grassRoughnessTexture}
             />
         </mesh>
+    )
+}
 
-    // if (floorRef.current) {
-    //     floorRef.current.geometry.setAttribute(
-    //         'uv2',
-    //         new THREE.BufferAttribute(floorRef.current.geometry.attributes.uv.array, 2))
+export default function SceneSixteen(props: SceneProps) {
+    const {scene} = useThree()
 
-    // }
+    // Refs
+    const ambientRef = useRef()
+    const directionalRef = useRef()
+    const ghostRef1 = useRef<PointLight>()
+    const ghostRef2 = useRef<PointLight>()
+    const ghostRef3 = useRef<PointLight>()
+
+    // Helpers
+    useHelper(directionalRef, DirectionalLightHelper, 0.5, props.color)
 
     //* Lights *\\
 
@@ -330,10 +333,10 @@ export default function SceneSixteen(props: SceneProps) {
         <scene>  
             <House position={[0, 0, 0]} />
             <Graves />
+            <Floor />
             {ghost1}
             {ghost2}
-            {ghost3}
-            {floor}
+            {ghost3}   
             {ambientLight}
             {moonLight}
             <CameraControls />
