@@ -139,7 +139,7 @@ const House = (props: HouseProps) => {
     const door = 
         <mesh ref={doorRef} position={[0, 1, 2.01]}>
             <planeBufferGeometry args={[2.2, 2.2, 100, 100]} />
-            <meshStandardMaterial
+            <meshPhysicalMaterial
                  map={colorTexture} 
                  transparent={true}
                  alphaMap={alphaTexture}
@@ -235,12 +235,12 @@ const Floor = () => {
     grassNormalTexture.wrapT = THREE.RepeatWrapping
     grassRoughnessTexture.wrapT = THREE.RepeatWrapping
     
-    // if (floorRef.current) {
-    //     floorRef.current.geometry.setAttribute(
-    //         'uv2',
-    //         new THREE.BufferAttribute(floorRef.current.geometry.attributes.uv.array, 2))
+    if (floorRef.current) {
+        floorRef.current.geometry.setAttribute(
+            'uv2',
+            new THREE.BufferAttribute(floorRef.current.geometry.attributes.uv.array, 2))
 
-    // }
+    }
 
     return  (
         <mesh
@@ -249,8 +249,8 @@ const Floor = () => {
             rotation-x={-Math.PI * .5}
             position={[0, 0, 0]}
         >
-            <planeGeometry args={[20, 20]} />
-            <meshStandardMaterial 
+            <planeBufferGeometry args={[20, 20]} />
+            <meshPhysicalMaterial 
                 map={grassColorTexture}
                 aoMap={grassAmbientOcclusionTexture}
                 normalMap={grassNormalTexture}
