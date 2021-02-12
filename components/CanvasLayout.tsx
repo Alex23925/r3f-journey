@@ -66,7 +66,7 @@ export default function CanvasLayout(props : CanvasLayoutProps) {
         <Canvas
         className="webgl"
         shadowMap={true}
-        shadowMap-type={THREE.PCFShadowMap}
+        shadowmap-type={THREE.PCFShadowMap}
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
         camera={{ position: props.cameraPosition, aspect: aspectRatio, near: .1, far: 100 }}

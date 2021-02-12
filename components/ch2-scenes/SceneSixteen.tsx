@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
-import { MeshProps, useFrame, useThree } from 'react-three-fiber'
+import { MeshProps, useFrame, useResource, useThree } from 'react-three-fiber'
 import { AmbientLight, DirectionalLight, Mesh, PointLight } from 'three'
 import CameraControls from '../CameraControls'
 import { useHelper } from "@react-three/drei"
@@ -81,8 +81,11 @@ const Graves = () => {
 const House = (props: HouseProps) => {
 
     // Refs
-    const doorRef = useRef()
-    const wallsRef = useRef()
+    const doorRef = useRef<Mesh>()
+    const wallsRef = useRef<Mesh>()
+
+    const wall = useResource()
+    console.log(wall.current)
 
     // Textures
     const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
@@ -103,7 +106,12 @@ const House = (props: HouseProps) => {
 
     // Walls
     const walls = 
-        <mesh receiveShadow={true} castShadow={true} ref={wallsRef} position={[0, 2.5/2, 0]}>
+        <mesh 
+            receiveShadow={true} 
+            castShadow={true}
+            ref={wallsRef} 
+            position={[0, 2.5/2, 0]}
+        >
             <boxBufferGeometry args={[4, 2.5, 4]} />
             <meshPhysicalMaterial 
                 map={brickColorTexture}
