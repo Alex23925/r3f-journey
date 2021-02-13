@@ -15,8 +15,8 @@ export default function playground00() {
         elevation: 0,
         visible: true,
         wireframe: false,
-        color: "0xff0000",
-        hoverColor: "0xff0000"
+        color: "#F235C9",
+        hoverColor: "#1326F9"
     })
 
 
@@ -27,7 +27,7 @@ export default function playground00() {
                 lessonNum={0}
                 chNum={1}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(4,2,5)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0,0,2.5)}>
                     <SceneZero 
                         elevation={params.elevation}
                         wireframe={params.wireframe} 
