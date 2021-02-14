@@ -117,6 +117,11 @@ export default function Layout({ lessonName, lessonNum, chNum, children }: Layou
                             <a className="link--styles">09. Haunted House</a>
                         </Link>
                     </div>
+                    <div className="link">
+                        <Link href='/17-particles'>
+                            <a className="link--styles">10. Particles</a>
+                        </Link>
+                    </div>
                 </motion.section>
             </motion.div>
             <main className="page-wrapper">{children}</main>
