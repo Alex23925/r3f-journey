@@ -69,9 +69,10 @@ const Galaxy = (props: GalaxyProps) => {
         // use mod(%) so we only go from 0 to the number of branches (0-branches)
         const branchAngle = ((i % props.branches) / props.branches) * 2 * Math.PI
 
-        const randomX = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
-        const randomY = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
-        const randomZ = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
+        // use randomness to get weird double galaxy effect
+        const randomX = Math.pow(Math.random(), props.randomness) * (Math.random() < 0.5 ? 1 : -1)
+        const randomY = Math.pow(Math.random(), props.randomness) * (Math.random() < 0.5 ? 1 : -1)
+        const randomZ = Math.pow(Math.random(), props.randomness) * (Math.random() < 0.5 ? 1 : -1)
 
         positionArray[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius + randomX // x
         positionArray[i3 + 1] = 0 + randomY // y
