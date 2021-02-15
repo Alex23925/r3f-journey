@@ -81,17 +81,17 @@ export default function SceneNineteen(props: SceneProps) {
             <pointLight position={[10, 10, 10]} />
             <mesh ref={obj1Ref} position={[-2, 0, 0]}>
                 <sphereGeometry args={[.5, 16, 16]} />
-                <meshBasicMaterial color={'#ff0000'} />
+                <meshBasicMaterial wireframe={props.wireframe} color={'#ff0000'} />
             </mesh>
 
             <mesh ref={obj2Ref} position={[0, 0, 0]}>
                 <sphereGeometry args={[.5, 16, 16]} />
-                <meshBasicMaterial color={'#ff0000'} />
+                <meshBasicMaterial wireframe={props.wireframe} color={'#ff0000'} />
             </mesh>
 
             <mesh ref={obj3Ref} position={[2, 0, 0]}>
                 <sphereGeometry args={[.5, 16, 16]} />
-                <meshBasicMaterial color={'#ff0000'} />
+                <meshBasicMaterial wireframe={props.wireframe} color={'#ff0000'} />
             </mesh>
             <CameraControls />
         </>
