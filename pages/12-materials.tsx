@@ -26,8 +26,8 @@ export default function materials12() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
+                lessonName='05. Materials'
+                lessonNum={12}
                 chNum={1}
             >
                 <CanvasLayout>

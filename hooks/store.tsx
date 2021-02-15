@@ -1,13 +1,20 @@
 import create from 'zustand'
+import {State} from 'zustand'
 
-const useStore = create((set) => {
-  return {
-    router: {},
-    events: null,
-    setEvents: (events : any) => {
-      set({ events })
-    },
-  }
-})
+interface LinkState extends State{
+  // links: []
+  numLinks: number
+  increaseLinks: () => void
+  // increaseLinkArray: (num : number) => void
+}
+
+
+const useStore = create<LinkState>((set) => ({
+  links: [],
+  // established 11 links before implementing zustand thats why 11 is starter num
+  numLinks: 11,
+  increaseLinks: () => set(state => ({numLinks: state.numLinks + 1})),
+  // increaseLinkArray: (num) => set(state => ({links: state.links.push(num)}))
+}))
 
 export default useStore

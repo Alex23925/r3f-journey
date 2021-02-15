@@ -4,15 +4,36 @@ import Meta from './Meta'
 import {useAnimation, motion} from 'framer-motion'
 import {useState} from 'react'
 import '../styles/layout.scss'
+import useStore from '../hooks/store'
 
 interface LayoutProps {
     lessonName: string
+    lessonLink: string
     lessonNum: number
     chNum: number
     children: ReactNode
 }
 
-export default function Layout({ lessonName, lessonNum, chNum, children }: LayoutProps) {
+export default function Layout({ lessonName, lessonLink, lessonNum, chNum, children }: LayoutProps) {
+
+    // Zustand State 
+    // const numLinks = useStore(state => state.numLinks)
+    // console.log(numLinks)
+
+    // let linksArray = []
+    // for(let i =0; i < numLinks; i++) {
+    //     linksArray.push(i)
+    // }
+    // console.log(linksArray)
+
+    // const aLinks =  linksArray.map((linksArray) =>
+    //      <div key={linksArray.toString()} className="link">
+    //         <Link href={lessonLink}>
+    //             <a className="link--styles">{lessonName}</a>
+    //         </Link>
+    //     </div>
+    //     );
+
     const easing = [.25, .1, .25, 1];
 
     const start = {
@@ -120,6 +141,11 @@ export default function Layout({ lessonName, lessonNum, chNum, children }: Layou
                     <div className="link">
                         <Link href='/17-particles'>
                             <a className="link--styles">10. Particles</a>
+                        </Link>
+                    </div>
+                    <div className="link">
+                        <Link href='/18-galaxy'>
+                            <a className="link--styles">11. Galaxy Generator</a>
                         </Link>
                     </div>
                 </motion.section>

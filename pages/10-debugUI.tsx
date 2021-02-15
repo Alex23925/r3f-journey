@@ -22,8 +22,8 @@ export default function debugUI10() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
+                lessonName='.03 Debug UI'
+                lessonNum={10}
                 chNum={1}
             >
                 <CanvasLayout>

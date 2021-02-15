@@ -3,6 +3,7 @@ import CanvasLayout from '../components/CanvasLayout'
 import SceneFifteen from '../components/ch2-scenes/SceneFifteen'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
 import React, { useState, Suspense } from 'react'
+import * as THREE from 'three'
 // NOTE
 // DatGUI missing styling so have to import it
 // If using scss go to that file path and change the css extension to scss
@@ -26,11 +27,12 @@ export default function shadows15() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
-                chNum={1}
+                lessonName='08. Shadows'
+                lessonLink={'/15-shadows'}
+                lessonNum={15}
+                chNum={2}
             >
-                <CanvasLayout>
+                <CanvasLayout  cameraPosition={new THREE.Vector3(0, 0, 3)}>
                     <Suspense fallback={null}>
                         <SceneFifteen
                             elevation={params.elevation}

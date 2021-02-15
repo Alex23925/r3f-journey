@@ -24,9 +24,10 @@ export default function debugUI10() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
-                chNum={1}
+                lessonName='10. Particles'
+                lessonLink={'/17-particles'}
+                lessonNum={17}
+                chNum={2}
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 3)}>
                     <SceneSeventeen

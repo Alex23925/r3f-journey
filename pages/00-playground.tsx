@@ -23,8 +23,8 @@ export default function playground00() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
+                lessonName='00. Playground'
+                lessonNum={00}
                 chNum={1}
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(0,0,2.5)}>

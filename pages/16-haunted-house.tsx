@@ -27,9 +27,10 @@ export default function hauntedHouse16() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
-                chNum={1}
+                lessonName='09. Haunted House'
+                lessonLink={'/16-haunted-house'}
+                lessonNum={16}
+                chNum={2}
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(4,2,5)}>
                     <SceneSixteen

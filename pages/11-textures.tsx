@@ -23,8 +23,8 @@ export default function textures11() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
+                lessonName='02. Geometries'
+                lessonNum={11}
                 chNum={1}
             >
                 <CanvasLayout>

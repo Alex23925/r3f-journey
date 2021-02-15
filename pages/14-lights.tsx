@@ -3,6 +3,7 @@ import CanvasLayout from '../components/CanvasLayout'
 import SceneFourteen from '../components/ch2-scenes/SceneFourteen'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
 import React, { useState } from 'react'
+import * as THREE from 'three'
 // NOTE
 // DatGUI missing styling so have to import it
 // If using scss go to that file path and change the css extension to scss
@@ -26,11 +27,12 @@ export default function lights14() {
     return (
         <>
             <Layout
-                lessonName='First Lesson'
-                lessonNum={0}
-                chNum={1}
+                lessonName='07. Lights'
+                lessonLink={'/14-lights'}
+                lessonNum={14}
+                chNum={2}
             >
-                <CanvasLayout>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 3)}>
                     <SceneFourteen
                         elevation={params.elevation}
                         wireframe={params.wireframe}
