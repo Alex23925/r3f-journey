@@ -7,81 +7,85 @@ import * as THREE from 'three'
 import img1 from '../../static/textures/particles/8.png'
 
 interface SceneProps {
-    elevation: number,
     color: string,
     hoverColor:string,
-    wireframe: boolean
-}
-
-interface BoxProps {
-    elevation: number,
-    color: string,
-    hoverColor: string,
-    wireframe: boolean
-}
-
-interface ParticleProps {
     size: number,
-    color: string
+    count: number,
+    radius: number,
+    branches: number,
+    spin: number,
+    randomness: number,
+    randomnessPower: number,
+    insideColor: string,
+    outsideColor: string
 }
 
-interface GalaxyProps {
-    size: number,
-    color: string
-}
+interface GalaxyProps extends SceneProps{}
 
 export default function SceneEighteen(props: SceneProps) {
     return (
         <scene>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Particles size={.05} color={props.color} />
+            {/* <Particles size={.05} color={props.color} /> */}
+            <Galaxy
+                color={props.color}
+                hoverColor={props.hoverColor}
+                size={props.size}
+                count={props.count} 
+                radius={props.radius}
+                branches={props.branches}
+                spin={props.spin}
+                randomness={props.randomness}
+                randomnessPower={props.randomnessPower}
+                insideColor={props.insideColor}
+                outsideColor={props.outsideColor}
+            />
             <CameraControls />
         </scene>
     )
 }
 
 const Galaxy = (props: GalaxyProps) => {
-}
-
-const Particles = (props: ParticleProps) => {
-
-    //Ref 
-    const particlesRef = useRef<Points>()
 
     // Textures
     const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
-
-        loadingManager.onStart = () => {
-        console.log('onStart')
-    }
-
-    loadingManager.onLoad = () => {
-        console.log('onLoaded')
-    }
-
-    loadingManager.onProgress = () => {
-        console.log('onProgress')
-    }
-
-    loadingManager.onError = () => {
-        console.log('onError')
-    }
-
     const textureLoader = useMemo(() => new THREE.TextureLoader(loadingManager), [img1])
-
     const particleTexture = textureLoader.load(img1)
 
-    const count = 500
+    // Particles
+    const positionArray = new Float32Array(props.count * 3)
+    const colorArray = new Float32Array(props.count * 3)
 
-    // Attributes (vertices, colors, faces etc.)
-    // Multiplying by 3  twice b/c each triangle need three vertices which need 3 values(x,y,z)
-    const positionArray = new Float32Array(count * 3)
-    const colorArray = new Float32Array(count * 3)
+    const colorInside = useMemo(() => new THREE.Color(props.insideColor), [])
+    const colorOutside = useMemo(() => new THREE.Color(props.outsideColor), [])
 
-    for(let i = 0; i < count * 3; i++){
-        positionArray[i] = (Math.random() - .5) * 10
-        colorArray[i] = Math.random()
+    for(let i = 0; i < props.count; i++){
+        const i3 = i * 3
+
+        // Position
+        const radius = Math.random() * props.radius
+        const spinAngle = radius * props.spin
+        // use mod(%) so we only go from 0 to the number of branches (0-branches)
+        const branchAngle = ((i % props.branches) / props.branches) * 2 * Math.PI
+
+        const randomX = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
+        const randomY = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
+        const randomZ = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
+
+        positionArray[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius + randomX // x
+        positionArray[i3 + 1] = 0 + randomY // y
+        positionArray[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ // z
+
+        // Color
+        // colorArray[i] = Math.random()
+        const mixedColor = colorInside.clone()
+        mixedColor.lerp(colorOutside, radius/ props.radius)
+
+        colorArray[i3 + 0] = mixedColor.r // r
+        colorArray[i3 + 1] = mixedColor.g // g
+        colorArray[i3 + 2] = mixedColor.b // b
+        
     }
 
     // Position Attribute
@@ -110,33 +114,15 @@ const Particles = (props: ParticleProps) => {
                                 blending={THREE.AdditiveBlending}
                                 depthWrite={false} 
                                 transparent={true}
-                                alphaMap={particleTexture}
                                 vertexColors={true}
+                                alphaMap={particleTexture}
                                 size={props.size} 
                                 sizeAttenuation={true} 
                             />
 
-    // Animations 
-    useFrame((state) => {
-        let time = state.clock.getElapsedTime()
-
-        for(let i = 0; i < count; i++) {
-            // to get x y or z
-            // [x, y, z] = [i3+0, i3+1, i3+2]
-            // ex. x = i3 + 0
-            const i3 = i * 3
-            
-            //ts error will fix later
-            const x = particlesGeometry.attributes.position.array[i3 + 0]
-            particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(time + x)
-            
-        }
-
-        particlesGeometry.attributes.position.needsUpdate =  true
-    })
-
+    
     const particles = 
-        <points ref={particlesRef} geometry={particlesGeometry}>
+        <points geometry={particlesGeometry}>
             {particleMaterial}
         </points>
 
@@ -145,5 +131,4 @@ const Particles = (props: ParticleProps) => {
                 {particles}
             </group>
         )
-
 }

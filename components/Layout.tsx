@@ -20,15 +20,12 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
     // const numLinks = useStore(state => state.numLinks)
     // console.log(numLinks)
 
-    // let linksArray = []
-    // for(let i =0; i < numLinks; i++) {
-    //     linksArray.push(i)
-    // }
+    // let linksArray = useStore(state => state.links)
     // console.log(linksArray)
 
-    // const aLinks =  linksArray.map((linksArray) =>
-    //      <div key={linksArray.toString()} className="link">
-    //         <Link href={lessonLink}>
+    // const aLinks =  linksArray.map((link) =>
+    //      <div key={link.toString()} className="link">
+    //         <Link href={link}>
     //             <a className="link--styles">{lessonName}</a>
     //         </Link>
     //     </div>
@@ -46,8 +43,7 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
             x: -240,}
     }
 
-    const controlHideNav = useAnimation();
-    const controlShowNav = useAnimation();
+    const controlHideNav = useAnimation()
 
     const [navOpen, setNavOpen] = useState(true)
 

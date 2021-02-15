@@ -2,19 +2,30 @@ import create from 'zustand'
 import {State} from 'zustand'
 
 interface LinkState extends State{
-  // links: []
+  links: string[]
   numLinks: number
   increaseLinks: () => void
-  // increaseLinkArray: (num : number) => void
 }
 
 
 const useStore = create<LinkState>((set) => ({
-  links: [],
+  links: [
+          '/00-playground',
+          '/',
+          '/geometries-09',
+          '/10-debugUI',
+          '/11-texture',
+          '/12-materials',
+          '/13-text',
+          '/14-lights',
+          '/15-shadows',
+          '/16-haunted-house',
+          '/17-particles',
+          '/18-galaxy', 
+         ],
   // established 11 links before implementing zustand thats why 11 is starter num
   numLinks: 11,
   increaseLinks: () => set(state => ({numLinks: state.numLinks + 1})),
-  // increaseLinkArray: (num) => set(state => ({links: state.links.push(num)}))
 }))
 
 export default useStore
