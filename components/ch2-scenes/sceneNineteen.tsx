@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
-import { MeshProps, useFrame, useThree } from 'react-three-fiber'
+import { MeshProps, useFrame, useThree, Vector2 } from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
 import * as THREE from 'three'
@@ -13,9 +13,9 @@ interface SceneProps {
 
 
 export default function SceneNineteen(props: SceneProps) {
+    const {camera} = useThree()
     // State 
-    // const [mouseX, setMouseX] = useState<Number>()
-    // const [mouseY, setMouseY] = useState<Number>()
+    const [mouse, setMouse] = useState<THREE.Vector2>()
 
     // Ref
     const obj1Ref = useRef<Mesh>()
@@ -24,9 +24,12 @@ export default function SceneNineteen(props: SceneProps) {
 
     const raycaster = useMemo(() => new THREE.Raycaster, [])
 
+    let currentIntersection = null
+
+    //* Animation *\\
     useFrame((state) => {
         let time = state.clock.getElapsedTime()
-
+        
         if(obj1Ref.current && obj2Ref.current && obj3Ref.current) {
             obj1Ref.current.position.y = Math.sin(time * 0.3) * 1.5 
             obj2Ref.current.position.y = Math.sin(time * 0.8) * 1.5
@@ -34,39 +37,41 @@ export default function SceneNineteen(props: SceneProps) {
         }
 
         // Cast Ray
-        // const rayOrigin = new THREE.Vector3(-3, 0, 0)
-        // const rayDirection = new THREE.Vector3(1, 0, 0)
-        // rayDirection.normalize()
+        const rayOrigin = new THREE.Vector3(-3, 0, 0)
+        const rayDirection = new THREE.Vector3(1, 0, 0)
+        rayDirection.normalize()
 
-        // raycaster.set(rayOrigin, rayDirection)
+        if(mouse) {
+            raycaster.setFromCamera(mouse, camera)
+        }
 
-        // if(obj1Ref.current && obj2Ref.current && obj3Ref.current) {
-        //     const objectsToTest = [obj1Ref.current, obj2Ref.current, obj3Ref.current]
-        //     const intersects = raycaster.intersectObjects(objectsToTest)
+        if(obj1Ref.current && obj2Ref.current && obj3Ref.current) {
+            const objectsToTest = [obj1Ref.current, obj2Ref.current, obj3Ref.current]
+            const intersects = raycaster.intersectObjects(objectsToTest)
 
-        //     for(const object of objectsToTest)
-        //     {
-        //         object.material.color.set('#ff0000')
-        //     }
+            for(const intersect of intersects)
+            {
+                intersect.object.material.color.set('#0000ff')
+            }
 
-        //     for(const intersect of intersects) 
-        //     {
-        //         intersect.object.material.color.set('#0000ff')
-        //     }
-        // }
-
+            for(const object of objectsToTest)
+            {
+                if(!intersects.find(intersect => intersect.object === object))
+                {
+                    object.material.color.set('#ff0000')
+                }
+            }
+        }
 
     })
 
     useEffect(() => {
         const mouse = new THREE.Vector2()
-
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX / window.innerWidth * 2 - 1
             mouse.y = -(e.clientY / window.innerHeight * 2 - 1)
-
-            // setMouseX(mouse.x)
-            // setMouseY(mouse.y)
+            
+            setMouse(mouse)
         })
     }, [])
 
