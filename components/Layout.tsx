@@ -144,6 +144,11 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
                             <a className="link--styles">11. Galaxy Generator</a>
                         </Link>
                     </div>
+                    <div className="link">
+                        <Link href='/19-raycaster'>
+                            <a className="link--styles">12. Raycaster</a>
+                        </Link>
+                    </div>
                 </motion.section>
             </motion.div>
             <main className="page-wrapper">{children}</main>
