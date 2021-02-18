@@ -3,6 +3,7 @@ import { MeshProps, useFrame } from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
 import useStore from '../../hooks/store'
+import {Physics, useSphere, usePlane} from '@react-three/cannon'
 import * as THREE from 'three'
 
 import px from '../../static/textures/environmentMaps/0/px.png'
@@ -62,8 +63,16 @@ const Box = (props: BoxProps) => {
 }
 
 const Sphere = (props: SphereProps) => {    
+    //* Physics *\\
+    const [sphereRef, api] = useSphere(() => ({ 
+        position: [0, 3, 0], 
+        args: 0.5,
+        mass: 1.0, 
+    }))
+
+
     return (
-        <mesh castShadow={true} position={[0, 0.5, 0]}>
+        <mesh ref={sphereRef}  castShadow={true}>
             <sphereBufferGeometry args={[0.5, 32, 32]} />
             <meshStandardMaterial 
                 metalness={0.3}
@@ -78,9 +87,14 @@ const Sphere = (props: SphereProps) => {
 const Floor = (props: FloorProps) => {
     const environmentMapsTextures = useStore(set => set.images)
 
+    //* Physics *\\
+    const [planeRef, api] = usePlane(() => ({
+        rotation: [-Math.PI * 0.5, 0, 0]
+    }))
+
     return (
-        <mesh receiveShadow={true} rotation-x={-Math.PI * 0.5}>
-            <planeGeometry />
+        <mesh ref={planeRef} receiveShadow={true}>
+            <planeGeometry args={[10, 10]} />
             <meshStandardMaterial
                 color={'#777777'}
                 metalness={0.3}
@@ -90,6 +104,7 @@ const Floor = (props: FloorProps) => {
         </mesh>
     )
 }
+
 export default function SceneTwenty(props: SceneProps) {
     //* Textures *\\
     const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
@@ -125,8 +140,13 @@ export default function SceneTwenty(props: SceneProps) {
                 shadow-camera-bottom = {-7}
                 position={[5, 5, 5]}
             />
-            <Sphere environmentMapTextures={environmentMapTexture}  />
-            <Floor environmentMapTextures={environmentMapTexture} />
+            <Physics 
+                gravity={[0, -9.82, 0]}
+                defaultContactMaterial={{friction: 0.1, restitution: .07}}
+            >
+                <Sphere environmentMapTextures={environmentMapTexture}  />
+                <Floor environmentMapTextures={environmentMapTexture} />
+            </Physics>
             <CameraControls />
         </scene>
     )

@@ -23,7 +23,7 @@ export default function debugUI10() {
     return (
         <>
             <Layout
-                lessonName='.20 Physics'
+                lessonName='20. Physics'
                 lessonLink={'/20-physics'}
                 lessonNum={10}
                 chNum={1}
