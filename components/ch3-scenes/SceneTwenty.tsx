@@ -1,4 +1,4 @@
-import React, { ReactNode,useRef, useState, useMemo } from 'react'
+import React, { ReactNode,useRef, useState, useMemo, useEffect } from 'react'
 import { MeshProps, useFrame } from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
@@ -139,6 +139,12 @@ export default function SceneTwenty(props: SceneProps) {
         nz
     ])
 
+    let balls = props.spheres
+    useEffect(() => {
+        balls = props.spheres
+        console.log(balls)
+    }, [props.spheres])
+
     return (
         <scene>
             <ambientLight args={[0xffffff, 0.7]} />
@@ -157,7 +163,7 @@ export default function SceneTwenty(props: SceneProps) {
                 gravity={[0, -9.82, 0]}
                 defaultContactMaterial={{friction: 0.1, restitution: .7}}
             >
-                {props.spheres}
+                {balls}
                 <Floor environmentMapTextures={environmentMapTexture} />
             </Physics>
             <CameraControls />

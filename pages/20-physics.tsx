@@ -2,7 +2,7 @@ import Layout from '../components/Layout'
 import CanvasLayout from '../components/CanvasLayout'
 import SceneTwenty from '../components/ch3-scenes/SceneTwenty'
 import DatGui, { DatColor, DatBoolean, DatNumber, DatButton } from "react-dat-gui";
-import React, { ReactNode, useRef, useState, useMemo } from 'react'
+import React, { ReactNode, useRef, useState, useEffect } from 'react'
 import * as THREE from 'three'
 import useStore from '../hooks/store'
 import {useSphere} from '@react-three/cannon'
@@ -30,13 +30,20 @@ interface SphereProps {
 export default function debugUI10() {
     // Zus-State
     const spheres = useStore(state => state.spheres)
-
-    spheres.push(<Sphere 
-                    position={[0, 3, 0]}
-                    radius={0.5} />)
- 
-
+    
     // State
+    let num = 3
+    const [balls, setBalls] = useState([<Sphere 
+                        position={[0, num, 0]}
+                        radius={0.5} />])
+
+    function createSphere() {
+            setBalls(arr => [...arr, <Sphere 
+                        position={[0, num, 0]}
+                        radius={0.5} />])
+        }
+
+    // Dat State
     const [params, setParams] = useState({
         elevation: 0,
         visible: true,
@@ -60,14 +67,12 @@ export default function debugUI10() {
                         wireframe={params.wireframe} 
                         color={params.color} 
                         hoverColor={params.hoverColor}
-                        spheres={spheres} 
+                        spheres={balls} 
                     />
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>
-                    <DatButton onClick={() => {spheres.push(<Sphere 
-                    position={[0, 3, 0]}
-                    radius={0.5} />)}} label="create sphere" />
+                    <DatButton onClick={createSphere} label="create sphere" />
                     <DatButton onClick={() => {console.log('delete sphere')}} label="delete sphere" />
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
                     <DatColor path="color" />
