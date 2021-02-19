@@ -1,15 +1,23 @@
 import create from 'zustand'
 import {State} from 'zustand'
 import * as THREE from 'three'
+import { Mesh } from 'three'
+import { ReactNode } from 'react'
 
 interface LinkState extends State{
+  spheres: ReactNode[]
+  numSpheres: number
   links: string[]
   numLinks: number
   increaseLinks: () => void
+  increaseSpheres: () => void
+  increaseNumSpheres: (sphere : Mesh) => void
 }
 
 
-const useStore = create<LinkState>((set) => ({
+const useStore = create<LinkState>((set, get) => ({
+  spheres: [],
+  numSpheres: 0,
   links: [
           '/00-playground',
           '/',
@@ -27,6 +35,8 @@ const useStore = create<LinkState>((set) => ({
   // established 11 links before implementing zustand thats why 11 is starter num
   numLinks: 11,
   increaseLinks: () => set(state => ({numLinks: state.numLinks + 1})),
+  increaseSpheres: () => set(state => ({spheres: [...state.spheres]})),
+  increaseNumSpheres: () => set(state => ({numSpheres: state.numSpheres + 1}))
 }))
 
 export default useStore

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import React, { ReactNode,useRef, useState, useMemo } from 'react'
 import { MeshProps, useFrame } from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
@@ -14,6 +14,7 @@ import pz from '../../static/textures/environmentMaps/0/pz.png'
 import nz from '../../static/textures/environmentMaps/0/nz.png'
 
 interface SceneProps {
+    spheres?: ReactNode,
     elevation: number,
     color: string,
     hoverColor:string,
@@ -28,7 +29,7 @@ interface BoxProps {
 }
 
 interface SphereProps {
-    environmentMapTextures: THREE.CubeTexture,
+    environmentMapTextures?: THREE.CubeTexture,
     radius: number,
     position: number[]
 }
@@ -66,7 +67,11 @@ const Box = (props: BoxProps) => {
     )
 }
 
-const Sphere = (props: SphereProps) => {    
+const Sphere = (props: SphereProps) => {  
+    // Zustand State
+    const spheres = useStore(state => state.spheres)
+    console.log(spheres)
+
     //* Physics *\\
     const [sphereRef, api] = useSphere(() => ({ 
         position: props.position, 
@@ -152,11 +157,7 @@ export default function SceneTwenty(props: SceneProps) {
                 gravity={[0, -9.82, 0]}
                 defaultContactMaterial={{friction: 0.1, restitution: .7}}
             >
-                <Sphere 
-                    environmentMapTextures={environmentMapTexture} 
-                    position={[0, 3, 0]}
-                    radius={0.5}
-                />
+                {props.spheres}
                 <Floor environmentMapTextures={environmentMapTexture} />
             </Physics>
             <CameraControls />
