@@ -142,7 +142,6 @@ export default function SceneTwenty(props: SceneProps) {
     let balls = props.spheres
     useEffect(() => {
         balls = props.spheres
-        console.log(balls)
     }, [props.spheres])
 
     return (

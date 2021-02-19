@@ -10,8 +10,7 @@ interface LinkState extends State{
   links: string[]
   numLinks: number
   increaseLinks: () => void
-  increaseSpheres: () => void
-  increaseNumSpheres: (sphere : Mesh) => void
+  increaseSpheres: (sphere : ReactNode) => void
 }
 
 
@@ -35,8 +34,7 @@ const useStore = create<LinkState>((set, get) => ({
   // established 11 links before implementing zustand thats why 11 is starter num
   numLinks: 11,
   increaseLinks: () => set(state => ({numLinks: state.numLinks + 1})),
-  increaseSpheres: () => set(state => ({spheres: [...state.spheres]})),
-  increaseNumSpheres: () => set(state => ({numSpheres: state.numSpheres + 1}))
+  increaseSpheres: (sphere) => set(state => ({spheres: [...state.spheres, sphere]})),
 }))
 
 export default useStore

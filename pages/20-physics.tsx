@@ -34,14 +34,24 @@ export default function debugUI10() {
     // State
     let num = 3
     const [balls, setBalls] = useState([<Sphere 
+                        key={0}
                         position={[0, num, 0]}
                         radius={0.5} />])
-
+    let length = balls.length-1
     function createSphere() {
-            setBalls(arr => [...arr, <Sphere 
+            setBalls(prevArr => [...prevArr, <Sphere 
+                        key={prevArr.length}
                         position={[0, num, 0]}
                         radius={0.5} />])
         }
+    
+    console.log(balls)
+    function deleteSphere() {
+        console.log(length)
+        const list = balls.filter(item => Number(item.key) === length-1)
+        setBalls(list)
+        console.log(list)
+    } 
 
     // Dat State
     const [params, setParams] = useState({
@@ -73,7 +83,7 @@ export default function debugUI10() {
 
                 <DatGui data={params} onUpdate={setParams}>
                     <DatButton onClick={createSphere} label="create sphere" />
-                    <DatButton onClick={() => {console.log('delete sphere')}} label="delete sphere" />
+                    <DatButton onClick={deleteSphere} label="delete sphere" />
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />
@@ -89,7 +99,6 @@ export default function debugUI10() {
 const Sphere = (props: SphereProps) => {  
     // Zustand State
     const spheres = useStore(state => state.spheres)
-    console.log(spheres)
       
     //* Physics *\\
     const [sphereRef, api] = useSphere(() => ({ 
