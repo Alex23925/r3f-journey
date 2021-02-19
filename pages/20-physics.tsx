@@ -41,49 +41,39 @@ export default function debugUI10() {
     // Zus-State
     const spheres = useStore(state => state.spheres)
     const radius = useStore(state => state.radius)
+    const setSpheresCopy = useStore(state => state.setSpheresCopy)
+    const addSphere = useStore(state => state.createSphere)
+    const removeSphere = useStore(state => state.deleteSphere)
     const setRadius = useStore(state => state.setRadius)
+
     // Geometry
     let sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
     const sphereMaterial = <meshStandardMaterial
                                 metalness={0.3}
                                 roughness={0.4}
                             />
-    // State
-    let num = 3
-    const [balls, setBalls] = useState(
-                    [<Sphere 
-                        key={0}
-                        sphereGeometry={sphereGeometry}
-                        sphereMaterial= {sphereMaterial}
-                        position={[0, num, 0]}
-                        radius={radius}
-                    />])
 
-    let length = balls.length-1
     function createSphere() {
         setRadius()
         sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
-            setBalls(prevArr => [
-                        ...prevArr, 
-                        <Sphere 
-                            key={prevArr.length}
-                            position={[
-                                (Math.random()-.5) * 3, 
-                                num, 
-                                (Math.random()-.5) * 3
-                            ]}
-                            sphereGeometry={sphereGeometry}
-                            sphereMaterial= {sphereMaterial}
-                            radius={radius} 
-                        />]
-                    )
+
+        addSphere(<Sphere 
+                    position={[
+                        (Math.random()-.5) * 3, 
+                        3, 
+                        (Math.random()-.5) * 3
+                    ]}
+                    sphereGeometry={sphereGeometry}
+                    sphereMaterial= {sphereMaterial}
+                    radius={radius} 
+                />)
+            console.log(spheres)
+
         }
     
     function deleteSphere() {
-        console.log(length)
-        const list = balls.splice(0, length)
-        setBalls(list)
-        console.log(list)
+        setSpheresCopy()
+        removeSphere()
     } 
 
     // Dat State
@@ -110,7 +100,7 @@ export default function debugUI10() {
                         wireframe={params.wireframe} 
                         color={params.color} 
                         hoverColor={params.hoverColor}
-                        spheres={balls} 
+                        spheres={spheres} 
                     />
                 </CanvasLayout>
 

@@ -8,9 +8,12 @@ interface LinkState extends State{
   radius: number,
   boxSize: number,
   spheres: ReactNode[]
-  createSpheres: (sphere : ReactNode) => void
+  spheresCopy: ReactNode[]
+  createSphere: (sphere : ReactNode) => void
+  deleteSphere: () => void
   setRadius: () => void
   setBoxSize: () => void
+  setSpheresCopy: () => void
 }
 
 
@@ -18,9 +21,12 @@ const useStore = create<LinkState>((set, get) => ({
   radius: Math.random() * .5,
   boxSize: 1,
   spheres: [],
-  createSpheres: (sphere) => set(state => ({spheres: [...state.spheres, sphere]})),
+  spheresCopy: [],
+  createSphere: (sphere) => set(state => ({spheres: [...state.spheres, sphere]})),
+  deleteSphere: () => set(state => ({spheres: state.spheresCopy})), 
   setRadius: () => set({radius: Math.random() * .5}),
-  setBoxSize: () => set({boxSize: Math.random() * .5})
+  setBoxSize: () => set({boxSize: Math.random() * .5}),
+  setSpheresCopy: () => set(state => ({spheresCopy: state.spheres.splice(0, state.spheres.length-1)}))
 }))
 
 export default useStore
