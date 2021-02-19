@@ -40,10 +40,13 @@ interface BoxProps {
 export default function debugUI10() {
     // Zus-State
     const spheres = useStore(state => state.spheres)
+    const numSpheres = useStore(state => state.numSpheres)
     const radius = useStore(state => state.radius)
     const setSpheresCopy = useStore(state => state.setSpheresCopy)
     const addSphere = useStore(state => state.createSphere)
     const removeSphere = useStore(state => state.deleteSphere)
+    const increaseNumSpheres = useStore(state => state.increaseNumSpheres)
+    const decreaseNumSpheres = useStore(state => state.decreaseNumSpheres)
     const setRadius = useStore(state => state.setRadius)
 
     // Geometry
@@ -57,7 +60,8 @@ export default function debugUI10() {
         setRadius()
         sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
 
-        addSphere(<Sphere 
+        addSphere(<Sphere
+                    key={numSpheres} 
                     position={[
                         (Math.random()-.5) * 3, 
                         3, 
@@ -67,13 +71,15 @@ export default function debugUI10() {
                     sphereMaterial= {sphereMaterial}
                     radius={radius} 
                 />)
-            console.log(spheres)
+        increaseNumSpheres()
+        console.log(spheres)
 
         }
     
     function deleteSphere() {
         setSpheresCopy()
         removeSphere()
+        decreaseNumSpheres()
     } 
 
     // Dat State
