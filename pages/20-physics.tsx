@@ -60,7 +60,8 @@ export default function debugUI10() {
                             />
 
     // Box Geometry and Material
-    
+    let boxGeometry = <boxBufferGeometry />
+    const boxMaterial = <meshStandardMaterial />
     
     function createSphere() {
         setRadius()
