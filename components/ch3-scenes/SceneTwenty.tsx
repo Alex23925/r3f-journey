@@ -28,10 +28,14 @@ interface BoxProps {
 }
 
 interface SphereProps {
-    environmentMapTextures: THREE.CubeTexture
+    environmentMapTextures: THREE.CubeTexture,
+    radius: number,
+    position: number[]
 }
 
-interface FloorProps extends SphereProps {}
+interface FloorProps {
+    environmentMapTextures: THREE.CubeTexture,
+}
 
 const Box = (props: BoxProps) => {
     let elevation = props.elevation
@@ -65,15 +69,19 @@ const Box = (props: BoxProps) => {
 const Sphere = (props: SphereProps) => {    
     //* Physics *\\
     const [sphereRef, api] = useSphere(() => ({ 
-        position: [0, 3, 0], 
-        args: 0.5,
-        mass: 1.0, 
+        position: props.position, 
+        args: props.radius,
+        mass: 10.0, 
     }))
 
+    useFrame(() => {
+        api.applyLocalForce([0, 0, 0], [0, 0, 0])
+        api.applyForce([0, 0, 0], [0, 0, 0])
+    })
 
     return (
         <mesh ref={sphereRef}  castShadow={true}>
-            <sphereBufferGeometry args={[0.5, 32, 32]} />
+            <sphereBufferGeometry args={[props.radius, 32, 32]} />
             <meshStandardMaterial 
                 metalness={0.3}
                 roughness={0.4}
@@ -142,9 +150,13 @@ export default function SceneTwenty(props: SceneProps) {
             />
             <Physics 
                 gravity={[0, -9.82, 0]}
-                defaultContactMaterial={{friction: 0.1, restitution: .07}}
+                defaultContactMaterial={{friction: 0.1, restitution: .7}}
             >
-                <Sphere environmentMapTextures={environmentMapTexture}  />
+                <Sphere 
+                    environmentMapTextures={environmentMapTexture} 
+                    position={[0, 3, 0]}
+                    radius={0.5}
+                />
                 <Floor environmentMapTextures={environmentMapTexture} />
             </Physics>
             <CameraControls />

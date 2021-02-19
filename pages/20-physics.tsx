@@ -1,7 +1,7 @@
 import Layout from '../components/Layout'
 import CanvasLayout from '../components/CanvasLayout'
 import SceneTwenty from '../components/ch3-scenes/SceneTwenty'
-import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
+import DatGui, { DatColor, DatBoolean, DatNumber, DatButton } from "react-dat-gui";
 import React, { useState } from 'react'
 import * as THREE from 'three'
 // NOTE
@@ -16,7 +16,8 @@ export default function debugUI10() {
         visible: true,
         wireframe: false,
         color: "0xff0000",
-        hoverColor: "0xff0000"
+        hoverColor: "0xff0000",
+        createSpheres: 0,
     })
 
 
@@ -28,7 +29,7 @@ export default function debugUI10() {
                 lessonNum={10}
                 chNum={1}
             >
-                <CanvasLayout  cameraPosition={new THREE.Vector3(-3, 3, 3)}>
+                <CanvasLayout  cameraPosition={new THREE.Vector3(-5, 3, 7)}>
                     <SceneTwenty 
                         elevation={params.elevation}
                         wireframe={params.wireframe} 
@@ -38,6 +39,7 @@ export default function debugUI10() {
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>
+                    <DatButton onClick={() => {console.log('create sphere')}} label="create spheres" />
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />
