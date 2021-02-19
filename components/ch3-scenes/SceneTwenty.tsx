@@ -14,7 +14,6 @@ import pz from '../../static/textures/environmentMaps/0/pz.png'
 import nz from '../../static/textures/environmentMaps/0/nz.png'
 
 interface SceneProps {
-    spheres?: ReactNode,
     elevation: number,
     color: string,
     hoverColor:string,
@@ -22,15 +21,10 @@ interface SceneProps {
 }
 
 interface BoxProps {
-    elevation: number,
-    color: string,
-    hoverColor: string,
-    wireframe: boolean
-}
-
-interface SphereProps {
     environmentMapTextures?: THREE.CubeTexture,
-    radius: number,
+    boxMaterial?: ReactNode,
+    boxGeometry?: ReactNode,
+    size: number,
     position: number[]
 }
 
@@ -38,35 +32,6 @@ interface FloorProps {
     environmentMapTextures: THREE.CubeTexture,
 }
 
-const Sphere = (props: SphereProps) => {  
-    // Zustand State
-    const spheres = useStore(state => state.spheres)
-    console.log(spheres)
-
-    //* Physics *\\
-    const [sphereRef, api] = useSphere(() => ({ 
-        position: props.position, 
-        args: props.radius,
-        mass: 10.0, 
-    }))
-
-    useFrame(() => {
-        api.applyLocalForce([0, 0, 0], [0, 0, 0])
-        api.applyForce([0, 0, 0], [0, 0, 0])
-    })
-
-    return (
-        <mesh ref={sphereRef}  castShadow={true}>
-            <sphereBufferGeometry args={[props.radius, 32, 32]} />
-            <meshStandardMaterial 
-                metalness={0.3}
-                roughness={0.4}
-                envMap={props.environmentMapTextures}
-            />
-        </mesh>
-        
-    )
-}
 
 const Floor = (props: FloorProps) => {
     const environmentMapsTextures = useStore(set => set.images)
@@ -110,10 +75,8 @@ export default function SceneTwenty(props: SceneProps) {
         nz
     ])
 
-    let balls = props.spheres
-    useEffect(() => {
-        balls = props.spheres
-    }, [props.spheres])
+    //Zustand State
+    const spheres = useStore(state => state.spheres)
 
     return (
         <scene>
@@ -133,7 +96,7 @@ export default function SceneTwenty(props: SceneProps) {
                 gravity={[0, -9.82, 0]}
                 defaultContactMaterial={{friction: 0.1, restitution: .7}}
             >
-                {balls}
+                {spheres}
                 <Floor environmentMapTextures={environmentMapTexture} />
             </Physics>
             <CameraControls />

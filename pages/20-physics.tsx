@@ -7,6 +7,7 @@ import * as THREE from 'three'
 import useStore from '../hooks/store'
 import {useSphere} from '@react-three/cannon'
 import {useFrame} from 'react-three-fiber'
+import Sphere from '../components/meshes/Sphere'
 
 import px from '../static/textures/environmentMaps/0/px.png'
 import nx from '../static/textures/environmentMaps/0/nx.png'
@@ -38,8 +39,8 @@ interface BoxProps {
 }
 
 export default function debugUI10() {
-    // Zus-State
-    const spheres = useStore(state => state.spheres)
+    //* Zustand State *\\
+    // Sphere
     const numSpheres = useStore(state => state.numSpheres)
     const radius = useStore(state => state.radius)
     const setSpheresCopy = useStore(state => state.setSpheresCopy)
@@ -48,14 +49,19 @@ export default function debugUI10() {
     const increaseNumSpheres = useStore(state => state.increaseNumSpheres)
     const decreaseNumSpheres = useStore(state => state.decreaseNumSpheres)
     const setRadius = useStore(state => state.setRadius)
+    
+    // Box
 
-    // Geometry
+    // Sphere Geometry and Material
     let sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
     const sphereMaterial = <meshStandardMaterial
                                 metalness={0.3}
                                 roughness={0.4}
                             />
 
+    // Box Geometry and Material
+    
+    
     function createSphere() {
         setRadius()
         sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
@@ -72,7 +78,6 @@ export default function debugUI10() {
                     radius={radius} 
                 />)
         increaseNumSpheres()
-        console.log(spheres)
 
         }
     
@@ -106,7 +111,6 @@ export default function debugUI10() {
                         wireframe={params.wireframe} 
                         color={params.color} 
                         hoverColor={params.hoverColor}
-                        spheres={spheres} 
                     />
                 </CanvasLayout>
 
@@ -125,27 +129,3 @@ export default function debugUI10() {
     )
 }
 
-const Sphere = (props: SphereProps) => {  
-    // Zustand State
-    const spheres = useStore(state => state.spheres)
-      
-    //* Physics *\\
-    const [sphereRef, api] = useSphere(() => ({ 
-        position: props.position, 
-        args: props.radius,
-        mass: 10.0, 
-    }))
-
-    useFrame(() => {
-        api.applyLocalForce([0, 0, 0], [0, 0, 0])
-        api.applyForce([0, 0, 0], [0, 0, 0])
-    })
-
-    return (
-        <mesh ref={sphereRef}  castShadow={true}>
-            {props.sphereGeometry}
-            {props.sphereMaterial}
-        </mesh>
-        
-    )
-}
