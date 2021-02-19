@@ -45,10 +45,9 @@ export default function debugUI10() {
                         radius={0.5} />])
         }
     
-    console.log(balls)
     function deleteSphere() {
         console.log(length)
-        const list = balls.filter(item => Number(item.key) === length-1)
+        const list = balls.splice(0, length)
         setBalls(list)
         console.log(list)
     } 
