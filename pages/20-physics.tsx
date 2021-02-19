@@ -23,26 +23,60 @@ import { Mesh } from 'three';
 
 interface SphereProps {
     environmentMapTextures?: THREE.CubeTexture,
-    radius: number,
+    sphereGeometry?: ReactNode,
+    sphereMaterial?: ReactNode,
+    radius?: number,
+    position: number[]
+}
+
+interface BoxProps {
+    environmentMapTextures?: THREE.CubeTexture,
+    boxMaterial?: ReactNode,
+    boxGeometry?: ReactNode,
+    size: number,
     position: number[]
 }
 
 export default function debugUI10() {
     // Zus-State
     const spheres = useStore(state => state.spheres)
-    
+    const radius = useStore(state => state.radius)
+    const setRadius = useStore(state => state.setRadius)
+    // Geometry
+    let sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
+    const sphereMaterial = <meshStandardMaterial
+                                metalness={0.3}
+                                roughness={0.4}
+                            />
     // State
     let num = 3
-    const [balls, setBalls] = useState([<Sphere 
+    const [balls, setBalls] = useState(
+                    [<Sphere 
                         key={0}
+                        sphereGeometry={sphereGeometry}
+                        sphereMaterial= {sphereMaterial}
                         position={[0, num, 0]}
-                        radius={0.5} />])
+                        radius={radius}
+                    />])
+
     let length = balls.length-1
     function createSphere() {
-            setBalls(prevArr => [...prevArr, <Sphere 
-                        key={prevArr.length}
-                        position={[0, num, 0]}
-                        radius={0.5} />])
+        setRadius()
+        sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
+            setBalls(prevArr => [
+                        ...prevArr, 
+                        <Sphere 
+                            key={prevArr.length}
+                            position={[
+                                (Math.random()-.5) * 3, 
+                                num, 
+                                (Math.random()-.5) * 3
+                            ]}
+                            sphereGeometry={sphereGeometry}
+                            sphereMaterial= {sphereMaterial}
+                            radius={radius} 
+                        />]
+                    )
         }
     
     function deleteSphere() {
@@ -113,12 +147,8 @@ const Sphere = (props: SphereProps) => {
 
     return (
         <mesh ref={sphereRef}  castShadow={true}>
-            <sphereBufferGeometry args={[props.radius, 32, 32]} />
-            <meshStandardMaterial 
-                metalness={0.3}
-                roughness={0.4}
-                envMap={props.environmentMapTextures}
-            />
+            {props.sphereGeometry}
+            {props.sphereMaterial}
         </mesh>
         
     )
