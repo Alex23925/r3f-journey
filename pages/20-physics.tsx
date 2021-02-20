@@ -8,7 +8,7 @@ import useStore from '../hooks/store'
 import {useSphere} from '@react-three/cannon'
 import {useFrame} from 'react-three-fiber'
 import Sphere from '../components/meshes/Sphere'
-
+import Box from '../components/meshes/Box'
 import px from '../static/textures/environmentMaps/0/px.png'
 import nx from '../static/textures/environmentMaps/0/nx.png'
 import py from '../static/textures/environmentMaps/0/py.png'
@@ -51,6 +51,14 @@ export default function debugUI10() {
     const setRadius = useStore(state => state.setRadius)
     
     // Box
+    const numBoxes = useStore(state => state.numSpheres)
+    const boxSize = useStore(state => state.boxSize)
+    const setBoxesCopy = useStore(state => state.setBoxesCopy)
+    const addBox = useStore(state => state.createBox)
+    const removeBox = useStore(state => state.deleteBox)
+    const increaseNumBoxes = useStore(state => state.increaseNumBoxes)
+    const decreaseNumBoxes = useStore(state => state.decreaseNumBoxes)
+    const setBoxSize = useStore(state => state.setBoxSize)
 
     // Sphere Geometry and Material
     let sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
@@ -60,9 +68,10 @@ export default function debugUI10() {
                             />
 
     // Box Geometry and Material
-    let boxGeometry = <boxBufferGeometry />
+    let boxGeometry = <boxBufferGeometry args={[boxSize, boxSize, boxSize]} />
     const boxMaterial = <meshStandardMaterial />
     
+    // Sphere create/delete functions
     function createSphere() {
         setRadius()
         sphereGeometry = <sphereBufferGeometry args={[radius, 32, 32]} />
@@ -86,6 +95,32 @@ export default function debugUI10() {
         setSpheresCopy()
         removeSphere()
         decreaseNumSpheres()
+    } 
+
+    // Sphere create/delete functions
+        function createBox() {
+        setBoxSize()
+        boxGeometry = <boxBufferGeometry args={[boxSize, boxSize, boxSize]} />
+
+        addSphere(<Box
+                    key={numBoxes} 
+                    position={[
+                        (Math.random()-.5) * 3, 
+                        3, 
+                        (Math.random()-.5) * 3
+                    ]}
+                    boxGeometry={boxGeometry}
+                    boxMaterial= {boxMaterial}
+                    size={boxSize}
+                />)
+        increaseNumBoxes()
+
+        }
+
+    function deleteBox() {
+        setBoxesCopy()
+        removeBox()
+        decreaseNumBoxes()
     } 
 
     // Dat State
@@ -118,6 +153,8 @@ export default function debugUI10() {
                 <DatGui data={params} onUpdate={setParams}>
                     <DatButton onClick={createSphere} label="create sphere" />
                     <DatButton onClick={deleteSphere} label="delete sphere" />
+                    <DatButton onClick={createBox} label="create box" />
+                    <DatButton onClick={deleteBox} label="delete box" />
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />

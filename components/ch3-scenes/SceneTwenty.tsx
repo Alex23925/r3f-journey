@@ -77,6 +77,7 @@ export default function SceneTwenty(props: SceneProps) {
 
     //Zustand State
     const spheres = useStore(state => state.spheres)
+    const boxes = useStore(state => state.boxes)
 
     return (
         <scene>
@@ -97,6 +98,7 @@ export default function SceneTwenty(props: SceneProps) {
                 defaultContactMaterial={{friction: 0.1, restitution: .7}}
             >
                 {spheres}
+                {boxes}
                 <Floor environmentMapTextures={environmentMapTexture} />
             </Physics>
             <CameraControls />
