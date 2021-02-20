@@ -51,7 +51,7 @@ export default function debugUI10() {
     const setRadius = useStore(state => state.setRadius)
     
     // Box
-    const numBoxes = useStore(state => state.numSpheres)
+    const numBoxes = useStore(state => state.numBoxes)
     const boxSize = useStore(state => state.boxSize)
     const setBoxesCopy = useStore(state => state.setBoxesCopy)
     const addBox = useStore(state => state.createBox)
@@ -102,7 +102,7 @@ export default function debugUI10() {
         setBoxSize()
         boxGeometry = <boxBufferGeometry args={[boxSize, boxSize, boxSize]} />
 
-        addSphere(<Box
+        addBox(<Box
                     key={numBoxes} 
                     position={[
                         (Math.random()-.5) * 3, 

@@ -1,7 +1,5 @@
 import create from 'zustand'
 import {State} from 'zustand'
-import * as THREE from 'three'
-import { Mesh } from 'three'
 import { ReactNode } from 'react'
 
 interface LinkState extends State{
@@ -43,8 +41,8 @@ const useStore = create<LinkState>((set, get) => ({
   increaseNumSpheres: () => set(state => ({numSpheres: state.numSpheres + 1})),
   decreaseNumSpheres: () => set(state => ({numSpheres: state.numSpheres - 1})),
   //Box Create/Delete Functions
-  createBox: (sphere) => set(state => ({spheres: [...state.spheres, sphere]})),
-  deleteBox: () => set(state => ({spheres: state.spheresCopy})), 
+  createBox: (box) => set(state => ({boxes: [...state.boxes, box]})),
+  deleteBox: () => set(state => ({boxes: state.boxesCopy})), 
   increaseNumBoxes: () => set(state => ({numBoxes: state.numBoxes + 1})),
   decreaseNumBoxes: () => set(state => ({numBoxes: state.numBoxes - 1})),
   setRadius: () => set({radius: Math.random() * .5}),
