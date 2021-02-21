@@ -1,7 +1,7 @@
 import Layout from '../components/Layout'
 import CanvasLayout from '../components/CanvasLayout'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui"
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import * as THREE from 'three'
 // NOTE
 // DatGUI missing styling so have to import it
@@ -29,12 +29,14 @@ export default function debugUI10() {
                 chNum={1}
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(2, 2, 2)}>
-                    <SceneTwentyOne 
-                        elevation={params.elevation}
-                        wireframe={params.wireframe} 
-                        color={params.color} 
-                        hoverColor={params.hoverColor} 
-                    />
+                    <Suspense fallback={null}>
+                        <SceneTwentyOne 
+                            elevation={params.elevation}
+                            wireframe={params.wireframe} 
+                            color={params.color} 
+                            hoverColor={params.hoverColor} 
+                        />
+                    </Suspense>
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>

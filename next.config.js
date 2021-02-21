@@ -41,6 +41,38 @@ const nextConfig = {
                 options: {
                 name: '[path][name].[ext]',
                 }
+            },
+            {
+                test: /\.(glb|gltf)$/,
+                use: {
+                loader: 'file-loader',
+                options: {
+                    publicPath: "/_next/static/images",
+                    outputPath: "static/images/",
+                }
+                },
+            },
+            {
+                test: /\.(bin)$/,
+                use: {
+                loader: 'file-loader',
+                options: {
+                    publicPath: "/_next/static/images",
+                    outputPath: "static/images/",
+                    name: '[name].[ext]' // keep the original name
+                }
+                },
+            },
+            {
+                test: /\.(png)$/,
+                use: {
+                loader: 'file-loader',
+                options: {
+                    publicPath: "/_next/static/images",
+                    outputPath: "static/images/",
+                    name: '[name].[ext]' // keep the original name
+                }
+                },
             }
         )
         return config
