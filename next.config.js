@@ -34,6 +34,13 @@ const nextConfig = {
                 test: /\.(glsl|vs|fs|vert|frag)$/,
                 exclude: /node_modules/,
                 use: ['raw-loader', 'glslify-loader'],
+            },
+            {
+                test: /\.mp3$/,
+                loader: 'file-loader',
+                options: {
+                name: '[path][name].[ext]',
+                }
             }
         )
         return config

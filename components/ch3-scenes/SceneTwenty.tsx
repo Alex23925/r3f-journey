@@ -96,6 +96,8 @@ export default function SceneTwenty(props: SceneProps) {
             <Physics 
                 gravity={[0, -9.82, 0]}
                 defaultContactMaterial={{friction: 0.1, restitution: .7}}
+                broadphase={'SAP'}
+                allowSleep={true}
             >
                 {spheres}
                 {boxes}

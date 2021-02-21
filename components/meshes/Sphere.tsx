@@ -1,7 +1,10 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState, useMemo } from 'react'
 import { useFrame } from 'react-three-fiber'
 import { useSphere } from '@react-three/cannon'
 import * as THREE from 'three'
+import hitSound from '../../static/sounds/hit.mp3'
+
+
 
 interface SphereProps {
     environmentMapTextures?: THREE.CubeTexture,
@@ -12,11 +15,17 @@ interface SphereProps {
 }
 
 const Sphere = (props: SphereProps) => {  
+     const sound = useMemo(() => new Audio(hitSound), [])
+
     //* Physics *\\
     const [sphereRef, api] = useSphere(() => ({ 
         position: props.position, 
         args: props.radius,
         mass: 10.0, 
+        onCollide: e => {
+            if(sound) 
+                sound.play()
+        }
     }))
 
     useFrame(() => {
