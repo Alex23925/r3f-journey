@@ -22,8 +22,11 @@ const Sphere = (props: SphereProps) => {
         position: props.position, 
         args: props.radius,
         mass: 10.0, 
-        onCollide: e => {
-            if(sound) 
+        onCollide: (e : any) => {
+            const impactStrength = e.contact.impactVelocity
+            
+            if(impactStrength > 1.5) 
+                sound.volume = Math.random()
                 sound.play()
         }
     }))
