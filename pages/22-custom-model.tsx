@@ -1,18 +1,18 @@
 import Layout from '../components/Layout'
 import CanvasLayout from '../components/CanvasLayout'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui"
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import * as THREE from 'three'
 // NOTE
 // DatGUI missing styling so have to import it
 // If using scss go to that file path and change the css extension to scss
 import 'react-dat-gui/dist/index.scss'
-import SceneTwentyOne from '../components/ch3-scenes/SceneTwentyOne'
+import SceneTwentyTwo from '../components/ch3-scenes/SceneTwentyTwo'
 
 export default function debugUI10() {
     // State
     const [params, setParams] = useState({
-        elevation: 1,
+        elevation: 0,
         visible: true,
         wireframe: false,
         color: "0xff0000",
@@ -23,20 +23,18 @@ export default function debugUI10() {
     return (
         <>
             <Layout
-                lessonName='21. Imported Models'
-                lessonLink='/21-imported-models'
+                lessonName='22. Custom Model'
+                lessonLink={'/22-custom-model'}
                 lessonNum={10}
                 chNum={1}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(2, 2, 2)}>
-                    <Suspense fallback={null}>
-                        <SceneTwentyOne 
-                            elevation={params.elevation}
-                            wireframe={params.wireframe} 
-                            color={params.color} 
-                            hoverColor={params.hoverColor} 
-                        />
-                    </Suspense>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 5)}>
+                    <SceneTwentyTwo 
+                        elevation={params.elevation}
+                        wireframe={params.wireframe} 
+                        color={params.color} 
+                        hoverColor={params.hoverColor} 
+                    />
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>

@@ -158,7 +158,12 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
                         <Link href='/21-imported-models'>
                             <a className="link--styles">14. Imported Models</a>
                         </Link>
-                    </div>                      
+                    </div>
+                    <div className="link">
+                        <Link href='/22-custom-model'>
+                            <a className="link--styles">15. Custom Model</a>
+                        </Link>
+                    </div>                        
                 </motion.section>
             </motion.div>
             <main className="page-wrapper">{children}</main>
