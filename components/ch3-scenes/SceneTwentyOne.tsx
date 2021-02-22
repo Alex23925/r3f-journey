@@ -1,11 +1,28 @@
-import React, { useRef, useState, useEffect, useMemo, Suspense } from 'react'
-import { MeshProps, useFrame, useLoader } from 'react-three-fiber'
-import type { Mesh } from 'three'
-import { useGLTF } from '@react-three/drei'
+import React, { Suspense, useEffect } from 'react'
+import { useGLTF, useAnimations } from '@react-three/drei'
 import CameraControls from '../CameraControls'
-import model from '../../static/models/Duck/glTF/Duck.gltf'
-import '../../static/models/Duck/glTF/Duck0.bin'
-import '../../static/models/Duck/glTF/DuckCM.png'
+import modelUrl from '../../static/models/FlightHelmet/glTF/FlightHelmet.gltf'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet.bin'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_BaseColor.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_Normal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_OcclusionRoughMetal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_BaseColor.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_Normal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_OcclusionRoughMetal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_BaseColor.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_Normal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_Normal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_OcclusionRoughMetal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_BaseColor.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_Normal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_OcclusionRoughMetal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_BaseColor.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_Normal.png'
+import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_OcclusionRoughMetal.png'
+
+import foxUrl from '../../static/models/Fox/glTF/Fox.gltf'
+import '../../static/models/Fox/glTF/Fox.bin'
+import '../../static/models/Fox/glTF/Texture.png'
 
 interface SceneProps {
     elevation: number,
@@ -59,15 +76,24 @@ const Lights = () => {
 }
 
 const Asset = (props: AssetProps) => {
-    const {scene} = useGLTF(props.url)
-    return <primitive scale={[0.2, 0.2, 0.2]} object={scene} />
+    const {scene, nodes, materials, animations} = useGLTF(props.url)
+    const {ref, mixer, names, actions, clips} = useAnimations(animations)
+    console.log(nodes)
+    useEffect(() => {
+        actions[names[2]].play()
+    }, [actions, names])
+    return (
+            <group ref={ref}>
+                <primitive scale={[0.025, 0.025, 0.025]} object={scene} />
+            </group>
+        )
 }
 
 export default function SceneTwentyOne(props: SceneProps) {
     return (
         <> 
             <Suspense fallback={null}>
-                <Asset url={model} />
+                <Asset url={foxUrl} />
             </Suspense>
             <Floor />
             <Lights />

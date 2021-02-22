@@ -49,6 +49,8 @@ const nextConfig = {
                 options: {
                     publicPath: "/_next/static/images",
                     outputPath: "static/images/",
+                    name: '[name].[ext]', // keep the original name
+                    watch: true,
                 }
                 },
             },
@@ -59,21 +61,24 @@ const nextConfig = {
                 options: {
                     publicPath: "/_next/static/images",
                     outputPath: "static/images/",
-                    name: '[name].[ext]' // keep the original name
+                    name: '[name].[ext]', // keep the original name
+                    watch: true,
                 }
                 },
             },
             {
                 test: /\.(png)$/,
                 use: {
-                loader: 'file-loader',
-                options: {
-                    publicPath: "/_next/static/images",
-                    outputPath: "static/images/",
-                    name: '[name].[ext]' // keep the original name
-                }
+                    loader: 'file-loader',
+                    options: {
+                        publicPath: "/_next/static/images",
+                        outputPath: "static/images/",
+                        name: '[name].[ext]', // keep the original name
+                        watch: true,
+                    }
                 },
-            }
+                
+            },
         )
         return config
     },
@@ -84,6 +89,7 @@ const withPlugins = require('next-compose-plugins');
 const withSass = require("@zeit/next-sass");
 const withImages = require('next-images')
 const { default: next } = require('next')
+const { watch } = require('fs')
 
 const withTM = require('next-transpile-modules')(
     ['three', '@react-three/drei'], // '@react-three/postprocessing'
