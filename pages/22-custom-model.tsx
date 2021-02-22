@@ -9,7 +9,7 @@ import * as THREE from 'three'
 import 'react-dat-gui/dist/index.scss'
 import SceneTwentyTwo from '../components/ch3-scenes/SceneTwentyTwo'
 
-export default function debugUI10() {
+export default function customModel22() {
     // State
     const [params, setParams] = useState({
         elevation: 0,
