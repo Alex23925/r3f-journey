@@ -108,12 +108,13 @@ export default function SceneTwentyThree(props: SceneProps) {
             />
             <Suspense fallback={null}>
                 <Environment background />
-                <FlightHelmet
+                {/* <FlightHelmet
                     helmetPositionX={props.helmetPositionX}
                     helmetPositionY={props.helmetPositionY}
                     helmetPositionZ={props.helmetPositionZ}
                     helmetRotationY={props.helmetRotationY}
-                />
+                /> */}
+                <Burger />
             </Suspense>
             <CameraControls />
         </scene>
