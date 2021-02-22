@@ -1,7 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, Suspense } from 'react'
 import { MeshProps, useFrame } from 'react-three-fiber'
 import type { Mesh } from 'three'
 import CameraControls from '../CameraControls'
+import { useGLTF } from '@react-three/drei'
+import burgerUrl from '../../static/models/burger.glb'
 
 interface SceneProps {
     elevation: number,
@@ -46,18 +48,21 @@ const Box = (props: BoxProps) => {
     )
 }
 
+const Burger = () => {
+    const {scene} = useGLTF(burgerUrl)
+    return (
+        <primitive scale={[0.5, 0.5, 0.5]} object={scene} />
+    )
+}
 export default function SceneTwentyTwo(props: SceneProps) {
     return (
-        <>
+        <scene>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box 
-                elevation={props.elevation} 
-                color={props.color} 
-                hoverColor={props.hoverColor} 
-                wireframe={props.wireframe}  
-            />
+            <Suspense fallback={null}>
+                <Burger />
+            </Suspense>
             <CameraControls />
-        </>
+        </scene>
     )
 }
