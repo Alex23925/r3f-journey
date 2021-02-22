@@ -66,19 +66,7 @@ const nextConfig = {
                 }
                 },
             },
-            {
-                test: /\.(png)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        publicPath: "/_next/static/images",
-                        outputPath: "static/images/",
-                        name: '[name].[ext]', // keep the original name
-                        watch: true,
-                    }
-                },
-                
-            },
+            
         )
         return config
     },

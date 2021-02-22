@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect, Suspense } from 'react'
-import { MeshProps, useFrame } from 'react-three-fiber'
-import type { Mesh } from 'three'
+import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react'
+import { MeshProps, useFrame, useThree } from 'react-three-fiber'
+import * as THREE from 'three'
 import CameraControls from '../CameraControls'
 import { useGLTF } from '@react-three/drei'
 import burgerUrl from '../../static/models/burger.glb'
@@ -22,6 +22,13 @@ import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsM
 import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_BaseColor.png'
 import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_Normal.png'
 import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_OcclusionRoughMetal.png'
+
+import px from '../../static/textures/environmentMaps/0/px.png'
+import nx from '../../static/textures/environmentMaps/0/nx.png'
+import py from '../../static/textures/environmentMaps/0/py.png'
+import ny from '../../static/textures/environmentMaps/0/ny.png'
+import pz from '../../static/textures/environmentMaps/0/pz.png'
+import nz from '../../static/textures/environmentMaps/0/nz.png'
 
 interface SceneProps {
     lightIntensity: number,
@@ -61,7 +68,33 @@ const FlightHelmet = (props : FlightHelmetProps) => {
     )
 }
 
+const Environment =  ({background = false}) => {
+    const {gl, scene} = useThree() 
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
+    const cubeTextureLoader = useMemo(() => new THREE.CubeTextureLoader(loadingManager), [
+        px,
+        nx,
+        py,
+        ny,
+        pz,
+        nz
+    ])
+    const environmentMapTexture = cubeTextureLoader.load([
+        px,
+        nx,
+        py,
+        ny,
+        pz,
+        nz
+    ])
+
+    scene.background = environmentMapTexture
+    console.log(environmentMapTexture)
+    return null
+}
+
 export default function SceneTwentyThree(props: SceneProps) {
+
     return (
         <scene>
             <directionalLight
@@ -74,6 +107,7 @@ export default function SceneTwentyThree(props: SceneProps) {
                         ]}
             />
             <Suspense fallback={null}>
+                <Environment background />
                 <FlightHelmet
                     helmetPositionX={props.helmetPositionX}
                     helmetPositionY={props.helmetPositionY}
