@@ -10,38 +10,6 @@ import * as THREE from 'three'
 import 'react-dat-gui/dist/index.scss'
 import SceneTwentyThree from '../components/ch3-scenes/SceneTwentyThree'
 
-import px from '../static/textures/environmentMaps/0/px.png'
-import nx from '../static/textures/environmentMaps/0/nx.png'
-import py from '../static/textures/environmentMaps/0/py.png'
-import ny from '../static/textures/environmentMaps/0/ny.png'
-import pz from '../static/textures/environmentMaps/0/pz.png'
-import nz from '../static/textures/environmentMaps/0/nz.png'
-
-const Environment =  ({background = false}) => {
-    const {gl, scene} = useThree() 
-    const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
-    const cubeTextureLoader = useMemo(() => new THREE.CubeTextureLoader(loadingManager), [
-        px,
-        nx,
-        py,
-        ny,
-        pz,
-        nz
-    ])
-    const environmentMapTexture = cubeTextureLoader.load([
-        px,
-        nx,
-        py,
-        ny,
-        pz,
-        nz
-    ])
-
-    scene.background = environmentMapTexture
-    console.log(environmentMapTexture)
-    return null
-}
-
 export default function realisticRender23() {
     // State
     const [params, setParams] = useState({
@@ -53,6 +21,7 @@ export default function realisticRender23() {
         helmetPositionY: -4,
         helmetPositionZ: 0,
         helmetRotationY: Math.PI * .5,
+        envMapIntensity: 5,
     })
 
 
@@ -66,7 +35,6 @@ export default function realisticRender23() {
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(4, 1, -4)}>
                     <Suspense fallback={null}>
-                        {/* <Environment /> */}
                         <SceneTwentyThree 
                             lightIntensity={params.lightIntensity}
                             lightPositionX={params.lightPositionX}
@@ -76,12 +44,14 @@ export default function realisticRender23() {
                             helmetPositionY={params.helmetPositionY}
                             helmetPositionZ={params.helmetPositionZ}
                             helmetRotationY={params.helmetRotationY}
+                            envMapIntensity={params.envMapIntensity}
                         />
                     </Suspense>
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>
                     <DatNumber path="lightIntensity" min={0} max={10} step={.001} label='intensity' />
+                    <DatNumber path="envMapIntensity" min={0} max={10} step={.001} label='environement Map Intensity' />
                     <DatNumber path="lightPositionX" min={-5} max={5} step={.001} label='light position x' />
                     <DatNumber path="lightPositionY" min={-5} max={5} step={.001} label='light position y' />
                     <DatNumber path="lightPositionZ" min={-5} max={5} step={.001} label='light position z' />

@@ -70,6 +70,21 @@ const nextConfig = {
             // removed due to an error with loading scene background
             // however now that it is removed I cannot load textures and bin files
             // for a model so I either use .glb or find another solution
+            {
+                test: /\.(png)$/,
+                exclude: [
+                    '/static/textures'
+                ],
+                use: {
+                loader: 'file-loader',
+                options: {
+                    publicPath: "/_next/static/images",
+                    outputPath: "static/images/",
+                    name: '[name].[ext]', // keep the original name
+                    watch: true,
+                }
+                },
+            },
         )
         return config
     },
