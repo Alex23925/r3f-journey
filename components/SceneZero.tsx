@@ -133,15 +133,20 @@ const Saturn = (props: SaturnProps) => {
     //* RING *\\
     let numParticles = 0
     let particleRef = useRef<Mesh>()
-    let particleRefs
+    let asteroids = []
     let p
-    if(ringRef.current) {
-        ringRef.current.rotation.x = Math.random()*Math.PI
-        ringRef.current.rotation.y = Math.random()*Math.PI
-        ringRef.current.position.y = -2 + Math.random() *4
+    
         for(let i = numParticles; i < props.particles; i++) {
-            p = <mesh ref={particleRef}>{particlesGeometry}{particlesMaterial}</mesh>
-            console.log(p)
+            p = <mesh 
+                    key={i}
+                    material={particlesMaterial} 
+                    geometry={particlesGeometry}
+                    rotation-x={Math.random()*Math.PI}
+                    rotation-y={Math.random()*Math.PI}
+                    position={[0, -2 + Math.random() *4, 0]}
+                >   
+                </mesh>
+            asteroids.push(p)
             if(particleRef.current) {
                 console.log("typeof " + particleRef.current)
                 particleRef.current.rotation.x = Math.random()*Math.PI
@@ -150,13 +155,13 @@ const Saturn = (props: SaturnProps) => {
                 ringRef.current?.add(particleRef.current)
                 }
                     
-            }
-    }    
+            } 
 
     return (
         <group>
             
-            <mesh ref={ringRef} material={particlesMaterial} geometry={particlesGeometry}>
+            <mesh ref={ringRef}>   
+                {asteroids}
             </mesh>
         </group>
     )

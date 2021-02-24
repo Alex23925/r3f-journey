@@ -69,7 +69,7 @@ export default function CanvasLayout(props : CanvasLayoutProps) {
         shadowmap-type={THREE.PCFShadowMap}
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
-        camera={{ position: props.cameraPosition, aspect: aspectRatio, near: .1, far: 100 }}
+        camera={{ position: props.cameraPosition, aspect: aspectRatio, fov:75, near: .1, far: 2000 }}
         gl={{antialias: true}}
         onCreated={canvasCtx => {
           canvasCtx.gl.physicallyCorrectLights = true
