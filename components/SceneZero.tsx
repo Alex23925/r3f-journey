@@ -1,49 +1,166 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useMemo, ReactNode } from 'react'
 import { MeshProps, useFrame } from 'react-three-fiber'
-import type { Mesh } from 'three'
+import { Color, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
 import CameraControls from './CameraControls'
+import * as THREE from 'three'
 
 interface SceneProps {
     elevation: number,
     color: string,
     hoverColor:string,
-    wireframe: boolean
+    wireframe: boolean,
+    innerRadius: number,
+    outerRadius: number,
+    particles: number,
+    minSpeed: number,
+    maxSpeed: number,
+    minSize: number,
+    maxSize: number
 }
 
-interface BoxProps {
-    elevation: number,
-    color: string,
-    hoverColor: string,
-    wireframe: boolean
+interface SaturnProps extends SceneProps {}
+
+interface ParticleProps {
+    material?: MeshStandardMaterial
+    passRef?: any
 }
 
-const Box = (props: BoxProps) => {
-    let elevation = props.elevation
-    let color = props.color
-    let hoverColor = props.hoverColor
-    // This reference will give us direct access to the mesh
-    const mesh = useRef<Mesh>()
-    // Set up state for the hovered and active state
-    const [hovered, setHover] = useState(false)
-    const [active, setActive] = useState(false)
+const Particle = (props: ParticleProps) => {
+    let pRef = props.passRef
+    let s = 1
+    let particlesGeometry
+    let randomNum = Math.random()
+      if (randomNum<.25){
+        // Cube
+        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s,s,s), [])
 
-    // Rotate mesh every frame, this is outside of React without overhead
-    useFrame(() => {
-        if (mesh.current) mesh.current.rotation.x = mesh.current.rotation.y += 0.001
-    })
+    }else if (randomNum < .5){
+        // Pyramid
+        particlesGeometry = useMemo(() => new THREE.CylinderGeometry(0,s,s*2, 4, 1), [])
+
+    }else if (randomNum < .75){
+        // potato shape
+        particlesGeometry = useMemo(() => new THREE.TetrahedronGeometry(s,2), [])
+
+    }else{
+        // thick plane
+        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s/6,s,s), [])
+    }
+
+    let particlesMesh = useMemo(() => new THREE.Mesh, [])
+    particlesMesh.geometry = particlesGeometry
 
     return (
-        <mesh
-            ref={mesh}
-            position={[0, elevation ,0]}
-            scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-            onClick={(event) => setActive(!active)}
-            onPointerOver={(event) => setHover(true)}
-            onPointerOut={(event) => setHover(false)}>
-            <boxBufferGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial wireframe={props.wireframe} color={hovered ? hoverColor : color} />
-        </mesh>
+                <mesh ref={pRef} geometry={particlesGeometry}>
+                    {props.material}
+                </mesh>
+            )
+
+    
+}
+
+const Saturn = (props: SaturnProps) => {
+    function getMaterial(color : THREE.Color){
+        let material = <meshStandardMaterial 
+                    flatShading={true}
+                    color={color}
+                    roughness={.9}
+                    emissive={new THREE.Color(0x270000)}
+                  />
+        // our material is a phong material, with no shininess (highlight) and a black specular
+        return material
+    }
+
+
+    //* PARTICLES *\\
+    let pRef = useRef<Mesh>()
+    let s = 5
+    let particlesGeometry
+    let randomNum = Math.random()
+      if (randomNum<.25){
+        // Cube
+        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s,s,s), [])
+
+    }else if (randomNum < .5){
+        // Pyramid
+        particlesGeometry = useMemo(() => new THREE.CylinderGeometry(0,s,s*2, 4, 1), [])
+
+    }else if (randomNum < .75){
+        // potato shape
+        particlesGeometry = useMemo(() => new THREE.TetrahedronGeometry(s,2), [])
+
+    }else{
+        // thick plane
+        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s/6,s,s), [])
+    }
+
+    let particlesMesh = useMemo(() => new THREE.Mesh, [])
+    particlesMesh.geometry = particlesGeometry
+    let particlesMaterial = useMemo(() => new THREE.MeshStandardMaterial, [])
+    particlesMaterial.flatShading = true
+    particlesMaterial.color = new THREE.Color('blue')
+    particlesMaterial.roughness = .9
+    particlesMaterial.emissive = useMemo(() => new THREE.Color(0x270000), [])
+    let particle
+
+    //* PLANET *\\
+    // Refs
+    const planetGeometryRef = useRef<TetrahedronGeometry>()
+    const ringRef = useRef<Mesh>()
+
+    // Geometry
+    const planetGeometry = <tetrahedronGeometry ref={planetGeometryRef} args={[20, 2]} />
+
+    let noise = 5
+    if(planetGeometryRef.current) {
+        for(let i=0; i<planetGeometryRef.current.vertices.length; i++) {
+            let v = planetGeometryRef.current.vertices[i]
+            v.x += -noise/2 + Math.random()*noise
+            v.y += -noise/2 + Math.random()*noise
+            v.z += -noise/2 + Math.random()*noise
+        }
+    }
+
+    // Material
+    const planetMaterial =  getMaterial(new THREE.Color('orange'))
+
+    const planet = 
+                <mesh>
+                    {planetGeometry}
+                    {planetMaterial}
+                </mesh>
+
+    //* RING *\\
+    let numParticles = 0
+    let particleRef = useRef<Mesh>()
+    let particleRefs
+    let p
+    if(ringRef.current) {
+        ringRef.current.rotation.x = Math.random()*Math.PI
+        ringRef.current.rotation.y = Math.random()*Math.PI
+        ringRef.current.position.y = -2 + Math.random() *4
+        for(let i = numParticles; i < props.particles; i++) {
+            p = <mesh ref={particleRef}>{particlesGeometry}{particlesMaterial}</mesh>
+            console.log(p)
+            if(particleRef.current) {
+                console.log("typeof " + particleRef.current)
+                particleRef.current.rotation.x = Math.random()*Math.PI
+                particleRef.current.rotation.y = Math.random()*Math.PI
+                particleRef.current.position.y = -2 + Math.random() *4
+                ringRef.current?.add(particleRef.current)
+                }
+                    
+            }
+    }    
+
+    return (
+        <group>
+            
+            <mesh ref={ringRef} material={particlesMaterial} geometry={particlesGeometry}>
+            </mesh>
+        </group>
     )
+    
 }
 
 export default function SceneZero(props: SceneProps) {
@@ -51,11 +168,18 @@ export default function SceneZero(props: SceneProps) {
         <>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box 
+            <Saturn
                 elevation={props.elevation} 
                 color={props.color} 
                 hoverColor={props.hoverColor} 
-                wireframe={props.wireframe}  
+                wireframe={props.wireframe}
+                innerRadius={props.innerRadius}
+                outerRadius={props.outerRadius}
+                particles={props.particles}
+                minSpeed={props.minSpeed}
+                maxSpeed={props.maxSpeed}
+                minSize={props.minSpeed}
+                maxSize={props.maxSize}
             />
             <CameraControls />
         </>

@@ -82,7 +82,7 @@ const Particles = (props: ParticleProps) => {
 
     const particleTexture = textureLoader.load(img1)
 
-    const count = 500
+    const count = 5000
 
     // Attributes (vertices, colors, faces etc.)
     // Multiplying by 3  twice b/c each triangle need three vertices which need 3 values(x,y,z)
@@ -138,7 +138,10 @@ const Particles = (props: ParticleProps) => {
             
             //ts error will fix later
             const x = particlesGeometry.attributes.position.array[i3 + 0]
-            particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(time + x)
+            const y = particlesGeometry.attributes.position.array[i3 + 1]
+            const z = particlesGeometry.attributes.position.array[i3 + 2]
+            particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(time + x) + Math.sin(time + z)
+            
             
         }
 
@@ -162,6 +165,7 @@ export default function SceneSeventeen(props: SceneProps) {
     return (
         <scene>
             <ambientLight />
+            <axesHelper />
             <pointLight position={[10, 10, 10]} />
             <Particles size={.05} color={props.color} />
             <CameraControls />

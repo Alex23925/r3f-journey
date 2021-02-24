@@ -41,12 +41,19 @@ export default function SceneEighteen(props: SceneProps) {
                 insideColor={props.insideColor}
                 outsideColor={props.outsideColor}
             />
+            {/* <axesHelper /> */}
             <CameraControls />
         </scene>
     )
 }
 
 const Galaxy = (props: GalaxyProps) => {
+
+    //variables
+    let angle = 0
+
+    // Refs
+    const pointsRef = useRef<Points>()
 
     // Textures
     const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
@@ -59,6 +66,36 @@ const Galaxy = (props: GalaxyProps) => {
 
     const colorInside = useMemo(() => new THREE.Color(props.insideColor), [])
     const colorOutside = useMemo(() => new THREE.Color(props.outsideColor), [])
+    
+    useFrame((state)=> {
+        let time = state.clock.getElapsedTime()
+        if(pointsRef.current) {
+            pointsRef.current.rotation.y = -time / 2
+        }
+        for(let i = 0; i < props.count; i++){
+            const i3 = i * 3
+
+            // Position
+            const radius = Math.random() * props.radius
+            const spinAngle = radius * props.spin
+
+            // use mod(%) so we only go from 0 to the number of branches (0-branches)
+            const branchAngle = ((i % props.branches) / props.branches) * 2 * Math.PI
+
+            // const randomY = Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1)
+
+            const x = particlesGeometry.attributes.position.array[i3 + 0] 
+            const z = particlesGeometry.attributes.position.array[i3 + 2]
+            const xPolar = radius * Math.cos(angle)
+            const zPolar = radius * Math.sin(angle)
+            // particlesGeometry.attributes.position.array[i3 + 0] = xPolar
+            // particlesGeometry.attributes.position.array[i3 + 2] = zPolar
+            // angle += 1
+
+            
+        }
+        particlesGeometry.attributes.position.needsUpdate = true
+    })
 
     for(let i = 0; i < props.count; i++){
         const i3 = i * 3
@@ -70,13 +107,16 @@ const Galaxy = (props: GalaxyProps) => {
         const branchAngle = ((i % props.branches) / props.branches) * 2 * Math.PI
 
         // use randomness to get weird double galaxy effect
-        const randomX = Math.pow(Math.random(), props.randomness) * (Math.random() < 0.5 ? 1 : -1)
-        const randomY = Math.pow(Math.random(), props.randomness) * (Math.random() < 0.5 ? 1 : -1)
-        const randomZ = Math.pow(Math.random(), props.randomness) * (Math.random() < 0.5 ? 1 : -1)
+        const randomX = (Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1))/ radius
+        const randomY = (Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1))
+        const randomZ = (Math.pow(Math.random(), props.randomnessPower) * (Math.random() < 0.5 ? 1 : -1))/ radius
 
-        positionArray[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius + randomX // x
-        positionArray[i3 + 1] = 0 + randomY // y
-        positionArray[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ // z
+        positionArray[i3 + 0] = (Math.cos(branchAngle + spinAngle) * radius + randomX) // x
+        positionArray[i3 + 1] = 0 + randomY/radius  // y
+        positionArray[i3 + 2] = (Math.sin(branchAngle + spinAngle) * radius + randomZ) // z
+        // positionArray[i3 + 0] = Math.cos(branchAngle + spinAngle) * radius // x
+        // positionArray[i3 + 1] = 0  // y
+        // positionArray[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius // z
 
         // Color
         // colorArray[i] = Math.random()
@@ -123,7 +163,7 @@ const Galaxy = (props: GalaxyProps) => {
 
     
     const particles = 
-        <points geometry={particlesGeometry}>
+        <points ref={pointsRef} rotation-x={Math.PI / 12} geometry={particlesGeometry}>
             {particleMaterial}
         </points>
 

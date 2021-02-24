@@ -16,7 +16,14 @@ export default function playground00() {
         visible: true,
         wireframe: false,
         color: "#F235C9",
-        hoverColor: "#1326F9"
+        hoverColor: "#1326F9",
+        innerRadius: 30,
+        outerRadius: 50,
+        particles: 300,
+        minSpeed: 0.005,
+        maxSpeed: 0.026,
+        minSize: 1.4,
+        maxSize: 0.7
     })
 
 
@@ -24,15 +31,23 @@ export default function playground00() {
         <>
             <Layout
                 lessonName='00. Playground'
-                lessonNum={00}
+                lessonNum={0}
+                lessonLink={'/00-playground'}
                 chNum={1}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(0,0,2.5)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0,0,100)}>
                     <SceneZero 
                         elevation={params.elevation}
                         wireframe={params.wireframe} 
                         color={params.color} 
-                        hoverColor={params.hoverColor} 
+                        hoverColor={params.hoverColor}
+                        innerRadius={params.innerRadius}
+                        outerRadius={params.outerRadius}
+                        particles={params.particles}
+                        minSpeed={params.minSpeed}
+                        maxSpeed={params.maxSpeed}
+                        minSize={params.minSpeed}
+                        maxSize={params.maxSize}
                     />
                 </CanvasLayout>
 
@@ -41,6 +56,13 @@ export default function playground00() {
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />
                     <DatBoolean path='wireframe' label='wireframe' />
+                    <DatNumber path="innerRadius" min={20} max={60} step={1} label={'inner Radius'} />
+                    <DatNumber path="outerRadius" min={40} max={100} step={1} label={'outer Radius'} />
+                    <DatNumber path="particles" min={50} max={800} step={1} label={'particles'} />
+                    <DatNumber path="minSpeed" min={.005} max={.05} step={.01} label={'min Speed'} />
+                    <DatNumber path="maxSpeed" min={.005} max={.05} step={.01} label={'max Speed'} />
+                    <DatNumber path="minSize" min={.01} max={5} step={.01} label={'min Size'} />
+                    <DatNumber path="maxSize" min={.01} max={5} step={.01} label={'max Size'} />
                 </DatGui>
 
             </Layout>

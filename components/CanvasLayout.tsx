@@ -70,7 +70,7 @@ export default function CanvasLayout(props : CanvasLayoutProps) {
         style={{ width: sizes.width, height: sizes.height }}
         pixelRatio={pixelRatio}
         camera={{ position: props.cameraPosition, aspect: aspectRatio, near: .1, far: 100 }}
-  
+        gl={{antialias: true}}
         onCreated={canvasCtx => {
           canvasCtx.gl.physicallyCorrectLights = true
           canvasCtx.gl.outputEncoding = THREE.sRGBEncoding

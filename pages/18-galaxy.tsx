@@ -16,7 +16,7 @@ export default function galaxy18() {
         color: "0xff0000",
         hoverColor: "0xff0000",
         size: .05,
-        count: 100000,
+        count: 10000,
         radius:5,
         branches: 3,
         spin: 1,
@@ -37,7 +37,7 @@ export default function galaxy18() {
                 lessonNum={18}
                 chNum={2}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 3)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0, 2, 8)}>
                     <SceneEighteen
                         color={params.color} 
                         hoverColor={params.hoverColor} 
@@ -61,7 +61,7 @@ export default function galaxy18() {
                     <DatNumber path="size" min={0.01} max={.1} step={.001} />
                     <DatNumber path="radius" min={1} max={10} step={.01} />
                     <DatNumber path="branches" min={1} max={10} step={1} />
-                    <DatNumber path="spin" min={-5} max={5} step={.01} />
+                    <DatNumber path="spin" min={-5} max={5} step={1} />
                     <DatNumber path="randomness" min={0} max={2} step={.001} />
                     <DatNumber path="randomnessPower" min={1} max={10} step={1} />
                     <DatNumber path="count" min={100} max={100000} step={100} label={'number of particles'} />
