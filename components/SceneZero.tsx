@@ -61,7 +61,12 @@ const Particle = (props: ParticleProps) => {
 }
 
 const Saturn = (props: SaturnProps) => {
-
+    //Zustand State
+    const randNum = useStore(state => state.randomNum)
+    const setRandomNum = useStore(state => state.setRandomNumber)
+    // Refs
+    const saturnRef = useRef<Mesh>()
+    // Helpers
     function getMaterial(color : THREE.Color){
         let material = <meshStandardMaterial 
                     flatShading={true}
@@ -71,6 +76,30 @@ const Saturn = (props: SaturnProps) => {
                   />
         // our material is a phong material, with no shininess (highlight) and a black specular
         return material
+    }
+
+    function getGeometry(num : number) {
+        let s = 1
+        let particlesGeometry
+        let randomNum = num
+        if (randomNum<.25){
+            // Cube
+            particlesGeometry = useMemo(() => new THREE.BoxGeometry(s,s,s), [])
+
+        }else if (randomNum < .5){
+            // Pyramid
+            particlesGeometry = useMemo(() => new THREE.CylinderGeometry(0,s,s*2, 4, 1), [])
+
+        }else if (randomNum < .75){
+            // potato shape
+            particlesGeometry = useMemo(() => new THREE.TetrahedronGeometry(s,2), [])
+
+        }else{
+            // thick plane
+            particlesGeometry = useMemo(() => new THREE.BoxGeometry(s/6,s,s), [])
+        }
+
+        return particlesGeometry
     }
 
     function rule3(v: any,vmin: any,vmax: any,tmin: any, tmax: any){
@@ -85,34 +114,15 @@ const Saturn = (props: SaturnProps) => {
 
 
     //* PARTICLES *\\
-    let s = 5
-    let particlesGeometry
-    let randomNum = Math.random()
-      if (randomNum<.25){
-        // Cube
-        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s,s,s), [])
-
-    }else if (randomNum < .5){
-        // Pyramid
-        particlesGeometry = useMemo(() => new THREE.CylinderGeometry(0,s,s*2, 4, 1), [])
-
-    }else if (randomNum < .75){
-        // potato shape
-        particlesGeometry = useMemo(() => new THREE.TetrahedronGeometry(s,2), [])
-
-    }else{
-        // thick plane
-        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s/6,s,s), [])
-    }
-
+     
+    // Material
     let particlesMesh = useMemo(() => new THREE.Mesh, [])
-    particlesMesh.geometry = particlesGeometry
+    particlesMesh.geometry = getGeometry(Math.random())
     let particlesMaterial = useMemo(() => new THREE.MeshStandardMaterial, [])
     particlesMaterial.flatShading = true
     particlesMaterial.color = new THREE.Color('blue')
     particlesMaterial.roughness = .9
     particlesMaterial.emissive = useMemo(() => new THREE.Color(0x270000), [])
-    let particle
 
     //* PLANET *\\
     // Refs
@@ -138,6 +148,7 @@ const Saturn = (props: SaturnProps) => {
     let randomN = Math.random() * 5
     const planet = 
                 <mesh 
+                    ref={saturnRef}
                     castShadow={true}
                     receiveShadow={true}
                     rotation-x={.2} 
@@ -151,16 +162,22 @@ const Saturn = (props: SaturnProps) => {
     let numParticles = 0
     let distance
     let angleStep = (Math.PI*2)/(numParticles + 1)
-    let particleRef = useRef<Mesh>()
     let asteroids = []
-    let p
     
-    // Animations
+    // Saturn Animations
+    useFrame(() => {
+        if(saturnRef.current) {
+            saturnRef.current.rotation.y-=.01
+        }
+    })
+    
+    // Asteroids Animations
     for(let i = numParticles; i < props.particles; i++) {
         const asteroidRef = useRef<Mesh>()
-        const x = (Math.random() - .5) * 100
-        const y = (Math.random() - .5) * 100
-        const z = (Math.random() - .5) * 100
+        let geometry = getGeometry(Math.random())
+        const x = (Math.random() - .5) * 10
+        const y = (Math.random() - .5) * 10
+        const z = (Math.random() - .5) * 10
         randomN = Math.floor(Math.random() * 5)
         distance = props.innerRadius + Math.random()*(props.maxSize - props.minSize)
         planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
@@ -193,7 +210,7 @@ const Saturn = (props: SaturnProps) => {
                         angle: angleStep*i,
                         angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
                     }}
-                    geometry={particlesGeometry}
+                    geometry={geometry}
                     rotation-x={Math.random()*Math.PI}
                     rotation-y={Math.random()*Math.PI}
                     position={[0, (-2 + Math.random()) *4, 0]}
