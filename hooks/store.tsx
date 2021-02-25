@@ -3,6 +3,9 @@ import {State} from 'zustand'
 import { ReactNode } from 'react'
 
 interface LinkState extends State{
+  randomNum: number,
+  randomColor: string,
+  colors: string[],
   radius: number,
   boxSize: number,
   spheres: ReactNode[]
@@ -11,6 +14,7 @@ interface LinkState extends State{
   numBoxes: number
   spheresCopy: ReactNode[]
   boxesCopy: ReactNode[]
+
   createSphere: (sphere : ReactNode) => void
   deleteSphere: () => void
   increaseNumSpheres: () => void
@@ -19,6 +23,8 @@ interface LinkState extends State{
   deleteBox: () => void
   increaseNumBoxes: () => void
   decreaseNumBoxes: () => void
+  setRandomColor: () => void
+  setRandomNumber: () => void
   setRadius: () => void
   setBoxSize: () => void
   setSpheresCopy: () => void
@@ -27,6 +33,9 @@ interface LinkState extends State{
 
 
 const useStore = create<LinkState>((set, get) => ({
+  randomNum: Math.random() * 5,
+  randomColor: '',
+  colors: ['blue', 'green', 'yellow', 'orange'],
   radius: Math.random() * .5,
   boxSize: 1,
   spheres: [],
@@ -35,6 +44,7 @@ const useStore = create<LinkState>((set, get) => ({
   numBoxes: 0,
   spheresCopy: [],
   boxesCopy: [],
+  
   //Sphere Create/Delete Functions
   createSphere: (sphere) => set(state => ({spheres: [...state.spheres, sphere]})),
   deleteSphere: () => set(state => ({spheres: state.spheresCopy})), 
@@ -44,7 +54,9 @@ const useStore = create<LinkState>((set, get) => ({
   createBox: (box) => set(state => ({boxes: [...state.boxes, box]})),
   deleteBox: () => set(state => ({boxes: state.boxesCopy})), 
   increaseNumBoxes: () => set(state => ({numBoxes: state.numBoxes + 1})),
+  setRandomColor: () => set(state => ({randomColor: state.colors[state.randomNum]})),
   decreaseNumBoxes: () => set(state => ({numBoxes: state.numBoxes - 1})),
+  setRandomNumber: () => set({randomNum: Math.random() * 5}),
   setRadius: () => set({radius: Math.random() * .5}),
   setBoxSize: () => set({boxSize: Math.random() * .5}),
   setSpheresCopy: () => set(state => ({spheresCopy: state.spheres.splice(0, state.spheres.length-1)})),

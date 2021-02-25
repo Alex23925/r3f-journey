@@ -3,6 +3,7 @@ import { MeshProps, useFrame } from 'react-three-fiber'
 import { Color, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
 import CameraControls from './CameraControls'
 import * as THREE from 'three'
+import useStore from '../hooks/store'
 
 interface SceneProps {
     elevation: number,
@@ -60,6 +61,7 @@ const Particle = (props: ParticleProps) => {
 }
 
 const Saturn = (props: SaturnProps) => {
+
     function getMaterial(color : THREE.Color){
         let material = <meshStandardMaterial 
                     flatShading={true}
@@ -71,9 +73,18 @@ const Saturn = (props: SaturnProps) => {
         return material
     }
 
+    function rule3(v: any,vmin: any,vmax: any,tmin: any, tmax: any){
+        var nv = Math.max(Math.min(v,vmax), vmin);
+        var dv = vmax-vmin;
+        var pc = (nv-vmin)/dv;
+        var dt = tmax-tmin;
+        var tv = tmin + (pc*dt);
+        return tv;
+  
+    }
+
 
     //* PARTICLES *\\
-    let pRef = useRef<Mesh>()
     let s = 5
     let particlesGeometry
     let randomNum = Math.random()
@@ -122,44 +133,80 @@ const Saturn = (props: SaturnProps) => {
     }
 
     // Material
-    const planetMaterial =  getMaterial(new THREE.Color('orange'))
-
+    let planetMaterial =  getMaterial(new THREE.Color('orange'))
+    let colors = ['blue', 'yellow', 'orange', 'green']
+    let randomN = Math.random() * 5
     const planet = 
-                <mesh>
+                <mesh 
+                    castShadow={true}
+                    receiveShadow={true}
+                    rotation-x={.2} 
+                    rotation-z={.2}
+                >
                     {planetGeometry}
                     {planetMaterial}
                 </mesh>
 
     //* RING *\\
     let numParticles = 0
+    let distance
+    let angleStep = (Math.PI*2)/(numParticles + 1)
     let particleRef = useRef<Mesh>()
     let asteroids = []
     let p
     
-        for(let i = numParticles; i < props.particles; i++) {
-            p = <mesh 
+    // Animations
+    for(let i = numParticles; i < props.particles; i++) {
+        const asteroidRef = useRef<Mesh>()
+        const x = (Math.random() - .5) * 100
+        const y = (Math.random() - .5) * 100
+        const z = (Math.random() - .5) * 100
+        randomN = Math.floor(Math.random() * 5)
+        distance = props.innerRadius + Math.random()*(props.maxSize - props.minSize)
+        planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
+        useFrame((state) => {
+            let time = state.clock.getElapsedTime()
+            if(asteroidRef.current) {
+                let asteroid = asteroidRef.current
+                asteroid.userData.angle += asteroid.userData.angularSpeed
+                // console.log(child.userData.angle)
+                let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
+                let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
+                asteroid.position.x = posX
+                asteroid.position.z = posZ
+                asteroid.rotation.x += Math.random()*.05
+                asteroid.rotation.y += Math.random()*.05
+                asteroid.rotation.z += Math.random()*.05
+
+                
+                
+            }
+        })
+
+        const asteroid = 
+                <mesh 
+                    ref={asteroidRef}
                     key={i}
-                    material={particlesMaterial} 
+                    userData={{
+                        po: null,
+                        distance: distance,
+                        angle: angleStep*i,
+                        angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
+                    }}
                     geometry={particlesGeometry}
                     rotation-x={Math.random()*Math.PI}
                     rotation-y={Math.random()*Math.PI}
-                    position={[0, -2 + Math.random() *4, 0]}
+                    position={[0, (-2 + Math.random()) *4, 0]}
                 >   
+                {planetMaterial}
                 </mesh>
-            asteroids.push(p)
-            if(particleRef.current) {
-                console.log("typeof " + particleRef.current)
-                particleRef.current.rotation.x = Math.random()*Math.PI
-                particleRef.current.rotation.y = Math.random()*Math.PI
-                particleRef.current.position.y = -2 + Math.random() *4
-                ringRef.current?.add(particleRef.current)
-                }
-                    
-            } 
+        console.log(asteroidRef.current?.userData.angle)
+        asteroids.push(asteroid)
+    }
 
     return (
         <group>
-            
+            {planet}
             <mesh ref={ringRef}>   
                 {asteroids}
             </mesh>
@@ -171,8 +218,20 @@ const Saturn = (props: SaturnProps) => {
 export default function SceneZero(props: SceneProps) {
     return (
         <>
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
+            <directionalLight args={[0xffffff, 1.5]} />
+            <pointLight
+                position={[200, 100, 200]} 
+                castShadow={true}
+                shadow-camera-left={-400}
+                shadow-camera-right ={400}
+                shadow-camera-top={400}
+                shadow-camera-bottom={-400}
+                shadow-camera-near={1}
+                shadow-camera-far={1000}
+                shadow-mapSize-width={1024}
+                shadow-mapSize-height={1024}
+                
+            />
             <Saturn
                 elevation={props.elevation} 
                 color={props.color} 

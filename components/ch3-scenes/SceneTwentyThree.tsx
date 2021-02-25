@@ -59,6 +59,7 @@ const Burger = () => {
     const {scene} = useGLTF(burgerUrl)
     scene.traverse((child) => {
         if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+            console.log(child)
             child.castShadow = true
             child.receiveShadow = true 
         }

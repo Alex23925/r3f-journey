@@ -19,7 +19,7 @@ export default function playground00() {
         hoverColor: "#1326F9",
         innerRadius: 30,
         outerRadius: 50,
-        particles: 300,
+        particles: 100,
         minSpeed: 0.005,
         maxSpeed: 0.026,
         minSize: 1.4,
@@ -58,7 +58,7 @@ export default function playground00() {
                     <DatBoolean path='wireframe' label='wireframe' />
                     <DatNumber path="innerRadius" min={20} max={60} step={1} label={'inner Radius'} />
                     <DatNumber path="outerRadius" min={40} max={100} step={1} label={'outer Radius'} />
-                    <DatNumber path="particles" min={50} max={800} step={1} label={'particles'} />
+                    <DatNumber path="particles" min={10} max={800} step={1} label={'particles'} />
                     <DatNumber path="minSpeed" min={.005} max={.05} step={.01} label={'min Speed'} />
                     <DatNumber path="maxSpeed" min={.005} max={.05} step={.01} label={'max Speed'} />
                     <DatNumber path="minSize" min={.01} max={5} step={.01} label={'min Size'} />
