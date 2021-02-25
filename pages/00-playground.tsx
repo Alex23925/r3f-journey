@@ -19,11 +19,11 @@ export default function playground00() {
         hoverColor: "#1326F9",
         innerRadius: 30,
         outerRadius: 50,
-        particles: 100,
+        particles: 250,
         minSpeed: 0.005,
         maxSpeed: 0.026,
-        minSize: 1.4,
-        maxSize: 0.7
+        minSize: .01,
+        maxSize: 2
     })
 
 
@@ -46,7 +46,7 @@ export default function playground00() {
                         particles={params.particles}
                         minSpeed={params.minSpeed}
                         maxSpeed={params.maxSpeed}
-                        minSize={params.minSpeed}
+                        minSize={params.minSize}
                         maxSize={params.maxSize}
                     />
                 </CanvasLayout>

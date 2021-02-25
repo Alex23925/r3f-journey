@@ -180,10 +180,11 @@ const Saturn = (props: SaturnProps) => {
         const z = (Math.random() - .5) * 10
         randomN = Math.floor(Math.random() * 5)
         distance = props.innerRadius + Math.random()*(props.maxSize - props.minSize)
+        console.log(distance, props.innerRadius, props.maxSize, props.minSize)
         planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
         useFrame((state) => {
             let time = state.clock.getElapsedTime()
-            if(asteroidRef.current) {
+            if(i, asteroidRef.current) {
                 let asteroid = asteroidRef.current
                 asteroid.userData.angle += asteroid.userData.angularSpeed
                 // console.log(child.userData.angle)
@@ -217,7 +218,6 @@ const Saturn = (props: SaturnProps) => {
                 >   
                 {planetMaterial}
                 </mesh>
-        console.log(asteroidRef.current?.userData.angle)
         asteroids.push(asteroid)
     }
 
@@ -259,7 +259,7 @@ export default function SceneZero(props: SceneProps) {
                 particles={props.particles}
                 minSpeed={props.minSpeed}
                 maxSpeed={props.maxSpeed}
-                minSize={props.minSpeed}
+                minSize={props.minSize}
                 maxSize={props.maxSize}
             />
             <CameraControls />
