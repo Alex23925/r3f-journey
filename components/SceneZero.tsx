@@ -179,12 +179,17 @@ const Saturn = (props: SaturnProps) => {
         const y = (Math.random() - .5) * 10
         const z = (Math.random() - .5) * 10
         randomN = Math.floor(Math.random() * 5)
-        distance = props.innerRadius + Math.random()*(props.maxSize - props.minSize)
+        distance = props.innerRadius + Math.random()*(props.outerRadius - props.innerRadius)
+        if(asteroidRef.current) {
+            let posX0 = Math.cos(asteroidRef.current.userData.angle)*asteroidRef.current.userData.distance
+            let posZ0 = Math.sin(asteroidRef.current.userData.angle)*asteroidRef.current.userData.distance
+            console.log(posX0, posZ0)
+        }
         console.log(distance, props.innerRadius, props.maxSize, props.minSize)
         planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
         useFrame((state) => {
             let time = state.clock.getElapsedTime()
-            if(i, asteroidRef.current) {
+            if(asteroidRef.current) {
                 let asteroid = asteroidRef.current
                 asteroid.userData.angle += asteroid.userData.angularSpeed
                 // console.log(child.userData.angle)
@@ -214,7 +219,7 @@ const Saturn = (props: SaturnProps) => {
                     geometry={geometry}
                     rotation-x={Math.random()*Math.PI}
                     rotation-y={Math.random()*Math.PI}
-                    position={[0, (-2 + Math.random()) *4, 0]}
+                    position-y={(-2 + Math.random()) *4}
                 >   
                 {planetMaterial}
                 </mesh>
@@ -235,8 +240,8 @@ const Saturn = (props: SaturnProps) => {
 export default function SceneZero(props: SceneProps) {
     return (
         <>
-            <directionalLight args={[0xffffff, 1.5]} />
-            <pointLight
+            <ambientLight args={[0x663344, 2]} />
+            <directionalLight
                 position={[200, 100, 200]} 
                 castShadow={true}
                 shadow-camera-left={-400}
@@ -245,8 +250,8 @@ export default function SceneZero(props: SceneProps) {
                 shadow-camera-bottom={-400}
                 shadow-camera-near={1}
                 shadow-camera-far={1000}
-                shadow-mapSize-width={1024}
-                shadow-mapSize-height={1024}
+                shadow-mapSize-width={2048}
+                shadow-mapSize-height={2048}
                 
             />
             <Saturn
