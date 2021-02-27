@@ -1,9 +1,10 @@
-import React, { useRef, useState, useMemo, useEffect, ReactNode } from 'react'
+import React, { useRef, useState, useMemo, useEffect, ReactNode, Suspense } from 'react'
 import { MeshProps, useFrame, useThree } from 'react-three-fiber'
-import { Color, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
+import { Color, Group, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
 import CameraControls from './CameraControls'
 import * as THREE from 'three'
-import useStore from '../hooks/store'
+import { useGLTF } from '@react-three/drei'
+import burgerUrl from '../static/models/burger.glb'
 
 interface SceneProps {
     elevation: number,
@@ -45,10 +46,34 @@ function rule3(v: any,vmin: any,vmax: any,tmin: any, tmax: any){
   
     }
 
+const Burger = () => {
+    const burgerRef =  useRef<Group>()
+    const {scene} = useGLTF(burgerUrl)
+    scene.traverse((child) => {
+        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+            console.log(child)
+            child.castShadow = true
+            child.receiveShadow = true 
+        }
+    })
+
+    useFrame(() => {
+        if(burgerRef.current) {
+            burgerRef.current.rotation.y-=.005
+        }
+    })
+
+    return (
+        <group rotation-x={Math.PI/6} position-y={-12} receiveShadow={true} ref={burgerRef}>
+            <primitive scale={[4.5, 4.5, 4.5]} object={scene} />
+        </group>
+    )
+}
 
 const Particle = (props: ParticleProps) => {
     let asteroidRef = useRef<Mesh>()
     let i = props.i
+    const {camera} = useThree()
 
     // userData
     let numParticles = 0
@@ -162,17 +187,6 @@ const Saturn = (props: SaturnProps) => {
         return particlesGeometry
     }
 
-    //* PARTICLES *\\
-     
-    // Material
-    let particlesMesh = useMemo(() => new THREE.Mesh, [])
-    particlesMesh.geometry = getGeometry(Math.random())
-    let particlesMaterial = useMemo(() => new THREE.MeshStandardMaterial, [])
-    particlesMaterial.flatShading = true
-    particlesMaterial.color = new THREE.Color('blue')
-    particlesMaterial.roughness = .9
-    particlesMaterial.emissive = useMemo(() => new THREE.Color(0x270000), [])
-
     //* PLANET *\\
     // Refs
     const planetGeometryRef = useRef<TetrahedronGeometry>()
@@ -240,7 +254,7 @@ const Saturn = (props: SaturnProps) => {
     
     return (
         <group>
-            {planet}
+            <Burger />
             <mesh ref={ringRef}>   
                 {particles}
             </mesh>
@@ -254,6 +268,7 @@ export default function SceneZero(props: SceneProps) {
         <scene>
             <ambientLight args={[0x663344, 2]} />
             <directionalLight
+                shadow-normalBias={7.5}
                 position={[200, 100, 200]} 
                 castShadow={true}
                 shadow-camera-left={-400}
@@ -266,19 +281,21 @@ export default function SceneZero(props: SceneProps) {
                 shadow-mapSize-height={2048}
                 
             />
-            <Saturn
-                elevation={props.elevation} 
-                color={props.color} 
-                hoverColor={props.hoverColor} 
-                wireframe={props.wireframe}
-                innerRadius={props.innerRadius}
-                outerRadius={props.outerRadius}
-                particles={props.particles}
-                minSpeed={props.minSpeed}
-                maxSpeed={props.maxSpeed}
-                minSize={props.minSize}
-                maxSize={props.maxSize}
-            />
+            <Suspense  fallback={null}>
+                <Saturn
+                    elevation={props.elevation} 
+                    color={props.color} 
+                    hoverColor={props.hoverColor} 
+                    wireframe={props.wireframe}
+                    innerRadius={props.innerRadius}
+                    outerRadius={props.outerRadius}
+                    particles={props.particles}
+                    minSpeed={props.minSpeed}
+                    maxSpeed={props.maxSpeed}
+                    minSize={props.minSize}
+                    maxSize={props.maxSize}
+                />
+            </Suspense>
             <CameraControls />
         </scene>
     )
