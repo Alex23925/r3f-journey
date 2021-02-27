@@ -49,15 +49,25 @@ function rule3(v: any,vmin: any,vmax: any,tmin: any, tmax: any){
 const Particle = (props: ParticleProps) => {
     let asteroidRef = useRef<Mesh>()
     let i = props.i
+
+    // userData
     let numParticles = 0
     let distance  = props.innerRadius + Math.random()*(props.outerRadius - props.innerRadius)
     let angleStep = (Math.PI*2)/(numParticles + 1)
+
+    // State
+    const [hovered, setHover] = useState<Number>()
+
+    // Variables
+    let hoverSize = 10
+    let s = props.maxSize
+    let slowNum = 1
 
     useFrame((state) => {
             let time = state.clock.getElapsedTime()
             if(asteroidRef.current) {
                 let asteroid = asteroidRef.current
-                asteroid.userData.angle += (asteroid.userData.angularSpeed)
+                asteroid.userData.angle += (asteroid.userData.angularSpeed/slowNum)
                 // console.log(child.userData.angle)
                 let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
                 let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
@@ -82,6 +92,16 @@ const Particle = (props: ParticleProps) => {
                         angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
                     }}
                     onClick={(event) => console.log(event)}
+                    onPointerOver={(event) => {
+                        slowNum = 10
+                        s= 2.5
+                        setHover(event.instanceId)
+                    }}
+                    onPointerOut={(event) =>{
+                        slowNum = 1
+                        s = 1
+                        setHover(undefined)
+                    }}
                     geometry={props.geometry}
                     rotation-x={Math.random()*Math.PI}
                     rotation-y={Math.random()*Math.PI}
