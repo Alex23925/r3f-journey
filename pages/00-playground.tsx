@@ -4,6 +4,8 @@ import SceneZero from '../components/SceneZero'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
 import React, { useState } from 'react'
 import * as THREE from 'three'
+
+// ALL CREDIT GOES TO KARIM MAALOUL ON CODEPEN
 // NOTE
 // DatGUI missing styling so have to import it
 // If using scss go to that file path and change the css extension to scss
@@ -19,7 +21,7 @@ export default function playground00() {
         hoverColor: "#1326F9",
         innerRadius: 30,
         outerRadius: 50,
-        particles: 250,
+        particles: 25,
         minSpeed: 0.005,
         maxSpeed: 0.026,
         minSize: .01,
@@ -35,7 +37,7 @@ export default function playground00() {
                 lessonLink={'/00-playground'}
                 chNum={1}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(0,0,100)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0,50,175)}>
                     <SceneZero 
                         elevation={params.elevation}
                         wireframe={params.wireframe} 

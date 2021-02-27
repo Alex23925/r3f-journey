@@ -1,5 +1,5 @@
-import React, { useRef, useState, useMemo, ReactNode } from 'react'
-import { MeshProps, useFrame } from 'react-three-fiber'
+import React, { useRef, useState, useMemo, useEffect } from 'react'
+import { MeshProps, useFrame, useThree } from 'react-three-fiber'
 import { Color, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
 import CameraControls from './CameraControls'
 import * as THREE from 'three'
@@ -22,37 +22,72 @@ interface SceneProps {
 interface SaturnProps extends SceneProps {}
 
 interface ParticleProps {
+    geometry?: any
     material?: MeshStandardMaterial
     passRef?: any
+    innerRadius: number,
+    outerRadius: number,
+    particles: number,
+    minSpeed: number,
+    maxSpeed: number,
+    minSize: number,
+    maxSize: number,
+    i: number
 }
 
-const Particle = (props: ParticleProps) => {
-    let pRef = props.passRef
-    let s = 1
-    let particlesGeometry
-    let randomNum = Math.random()
-      if (randomNum<.25){
-        // Cube
-        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s,s,s), [])
-
-    }else if (randomNum < .5){
-        // Pyramid
-        particlesGeometry = useMemo(() => new THREE.CylinderGeometry(0,s,s*2, 4, 1), [])
-
-    }else if (randomNum < .75){
-        // potato shape
-        particlesGeometry = useMemo(() => new THREE.TetrahedronGeometry(s,2), [])
-
-    }else{
-        // thick plane
-        particlesGeometry = useMemo(() => new THREE.BoxGeometry(s/6,s,s), [])
+function rule3(v: any,vmin: any,vmax: any,tmin: any, tmax: any){
+        var nv = Math.max(Math.min(v,vmax), vmin);
+        var dv = vmax-vmin;
+        var pc = (nv-vmin)/dv;
+        var dt = tmax-tmin;
+        var tv = tmin + (pc*dt);
+        return tv;
+  
     }
 
-    let particlesMesh = useMemo(() => new THREE.Mesh, [])
-    particlesMesh.geometry = particlesGeometry
+
+const Particle = (props: ParticleProps) => {
+    let asteroidRef = useRef<Mesh>()
+    let i = props.i
+    let numParticles = 0
+    let distance  = props.innerRadius + Math.random()*(props.outerRadius - props.innerRadius)
+    let angleStep = (Math.PI*2)/(numParticles + 1)
+
+    useFrame((state) => {
+            let time = state.clock.getElapsedTime()
+            if(asteroidRef.current) {
+                let asteroid = asteroidRef.current
+                asteroid.userData.angle += (asteroid.userData.angularSpeed)
+                // console.log(child.userData.angle)
+                let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
+                let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
+                asteroid.position.x = posX
+                asteroid.position.z = posZ
+                asteroid.rotation.x += Math.random()*.05
+                asteroid.rotation.y += Math.random()*.05
+                asteroid.rotation.z += Math.random()*.05
+            
+            }
+        })
 
     return (
-                <mesh ref={pRef} geometry={particlesGeometry}>
+                <mesh 
+                    castShadow={true}
+                    ref={asteroidRef}
+                    key={i}
+                    userData={{
+                        po: null,
+                        distance: distance,
+                        angle: angleStep*props.i,
+                        angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
+                    }}
+                    onClick={(event) => console.log(event)}
+                    geometry={props.geometry}
+                    rotation-x={Math.random()*Math.PI}
+                    rotation-y={Math.random()*Math.PI}
+                    position-y={(-2 + Math.random()) *4}
+                    scale={[props.maxSize, props.maxSize, props.maxSize]}
+                >
                     {props.material}
                 </mesh>
             )
@@ -61,11 +96,25 @@ const Particle = (props: ParticleProps) => {
 }
 
 const Saturn = (props: SaturnProps) => {
+    //* CAMERA *\\
+    const {camera} = useThree()
+    console.log(camera)
+
     //Zustand State
     const randNum = useStore(state => state.randomNum)
     const setRandomNum = useStore(state => state.setRandomNumber)
+
     // Refs
     const saturnRef = useRef<Mesh>()
+
+    // State
+    const [hovered, setHover] = useState<Number>()
+
+    // Variables
+    let hoverSize = 10
+    let s = props.maxSize
+    let slowNum = 1
+
     // Helpers
     function getMaterial(color : THREE.Color){
         let material = <meshStandardMaterial 
@@ -79,7 +128,6 @@ const Saturn = (props: SaturnProps) => {
     }
 
     function getGeometry(num : number) {
-        let s = 1
         let particlesGeometry
         let randomNum = num
         if (randomNum<.25){
@@ -128,7 +176,7 @@ const Saturn = (props: SaturnProps) => {
     // Refs
     const planetGeometryRef = useRef<TetrahedronGeometry>()
     const ringRef = useRef<Mesh>()
-
+    const previousAsteroid = useRef<Mesh>()
     // Geometry
     const planetGeometry = <tetrahedronGeometry ref={planetGeometryRef} args={[20, 2]} />
 
@@ -153,6 +201,9 @@ const Saturn = (props: SaturnProps) => {
                     receiveShadow={true}
                     rotation-x={.2} 
                     rotation-z={.2}
+                    onClick={(event) => console.log(event)}
+                    onPointerOver={(event) =>{ slowNum = 10}}
+                    onPointerOut={(event) => slowNum = 1}
                 >
                     {planetGeometry}
                     {planetMaterial}
@@ -162,8 +213,10 @@ const Saturn = (props: SaturnProps) => {
     let numParticles = 0
     let distance
     let angleStep = (Math.PI*2)/(numParticles + 1)
-    let asteroids = []
-    
+    let asteroids : any = []
+    let particles : any = []
+    let asteroidRefs : any = []
+
     // Saturn Animations
     useFrame(() => {
         if(saturnRef.current) {
@@ -171,6 +224,25 @@ const Saturn = (props: SaturnProps) => {
         }
     })
     
+    for(let i = numParticles; i < props.particles; i++) {
+        randomN = Math.floor(Math.random() * 5)
+        planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
+        particles.push(
+            <Particle 
+                geometry={getGeometry(Math.random())} 
+                material={planetMaterial}
+                innerRadius={props.innerRadius}
+                particles={props.particles}
+                minSpeed={props.minSpeed}
+                maxSpeed={props.maxSpeed}
+                minSize={props.minSize}
+                maxSize={props.maxSize}
+                outerRadius={props.outerRadius}
+                i={i}
+            />
+        )
+    }
+
     // Asteroids Animations
     for(let i = numParticles; i < props.particles; i++) {
         const asteroidRef = useRef<Mesh>()
@@ -180,18 +252,12 @@ const Saturn = (props: SaturnProps) => {
         const z = (Math.random() - .5) * 10
         randomN = Math.floor(Math.random() * 5)
         distance = props.innerRadius + Math.random()*(props.outerRadius - props.innerRadius)
-        if(asteroidRef.current) {
-            let posX0 = Math.cos(asteroidRef.current.userData.angle)*asteroidRef.current.userData.distance
-            let posZ0 = Math.sin(asteroidRef.current.userData.angle)*asteroidRef.current.userData.distance
-            console.log(posX0, posZ0)
-        }
-        console.log(distance, props.innerRadius, props.maxSize, props.minSize)
         planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
         useFrame((state) => {
             let time = state.clock.getElapsedTime()
             if(asteroidRef.current) {
                 let asteroid = asteroidRef.current
-                asteroid.userData.angle += asteroid.userData.angularSpeed
+                asteroid.userData.angle += (asteroid.userData.angularSpeed/slowNum)
                 // console.log(child.userData.angle)
                 let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
                 let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
@@ -200,14 +266,12 @@ const Saturn = (props: SaturnProps) => {
                 asteroid.rotation.x += Math.random()*.05
                 asteroid.rotation.y += Math.random()*.05
                 asteroid.rotation.z += Math.random()*.05
-
-                
-                
+            
             }
         })
-
         const asteroid = 
                 <mesh 
+                    castShadow={true}
                     ref={asteroidRef}
                     key={i}
                     userData={{
@@ -216,7 +280,19 @@ const Saturn = (props: SaturnProps) => {
                         angle: angleStep*i,
                         angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
                     }}
+                    onClick={(event) => console.log(event)}
+                    onPointerOver={(event) => {
+                        slowNum = 10
+                        s= 2.5
+                        setHover(event.instanceId)
+                    }}
+                    onPointerOut={(event) =>{
+                        slowNum = 1
+                        s = 1
+                        setHover(undefined)
+                    }}
                     geometry={geometry}
+                    scale={[s, s, s]}
                     rotation-x={Math.random()*Math.PI}
                     rotation-y={Math.random()*Math.PI}
                     position-y={(-2 + Math.random()) *4}
@@ -224,13 +300,14 @@ const Saturn = (props: SaturnProps) => {
                 {planetMaterial}
                 </mesh>
         asteroids.push(asteroid)
+        asteroidRefs.push(asteroidRef)
     }
-
+    
     return (
         <group>
             {planet}
             <mesh ref={ringRef}>   
-                {asteroids}
+                {particles}
             </mesh>
         </group>
     )
@@ -239,7 +316,7 @@ const Saturn = (props: SaturnProps) => {
 
 export default function SceneZero(props: SceneProps) {
     return (
-        <>
+        <scene>
             <ambientLight args={[0x663344, 2]} />
             <directionalLight
                 position={[200, 100, 200]} 
@@ -268,6 +345,6 @@ export default function SceneZero(props: SceneProps) {
                 maxSize={props.maxSize}
             />
             <CameraControls />
-        </>
+        </scene>
     )
 }

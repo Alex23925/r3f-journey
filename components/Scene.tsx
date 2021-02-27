@@ -30,12 +30,16 @@ const Box: React.FC<MeshProps> = (props) => {
 }
 
 export default function Scene() {
+    const boxes = []
+    for(let i = 0; i < 5; i++) {
+        boxes.push(<Box position={[i+5, 0, 0]} />)
+    }
     return (
-        <>
+        <scene>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
             <Box position={[0, 0, 0]} />
             <CameraControls />
-        </>
+        </scene>
     )
 }

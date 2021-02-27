@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { MeshProps, useFrame, useThree, Vector2 } from 'react-three-fiber'
-import type { Mesh } from 'three'
+import { Mesh, Vector3 } from 'three'
 import CameraControls from '../CameraControls'
 import * as THREE from 'three'
 
@@ -52,6 +52,7 @@ export default function SceneNineteen(props: SceneProps) {
             for(const intersect of intersects)
             {
                 intersect.object.material.color.set('#0000ff')
+                intersect.object.scale.set(2, 2, 2)
             }
 
             for(const object of objectsToTest)
@@ -59,6 +60,7 @@ export default function SceneNineteen(props: SceneProps) {
                 if(!intersects.find(intersect => intersect.object === object))
                 {
                     object.material.color.set('#ff0000')
+                    object.scale.set(1, 1, 1)
                 }
             }
         }
