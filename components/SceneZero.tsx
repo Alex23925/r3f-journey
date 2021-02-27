@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react'
+import React, { useRef, useState, useMemo, useEffect, ReactNode } from 'react'
 import { MeshProps, useFrame, useThree } from 'react-three-fiber'
 import { Color, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
 import CameraControls from './CameraControls'
@@ -23,7 +23,7 @@ interface SaturnProps extends SceneProps {}
 
 interface ParticleProps {
     geometry?: any
-    material?: MeshStandardMaterial
+    material: ReactNode
     passRef?: any
     innerRadius: number,
     outerRadius: number,
@@ -76,6 +76,7 @@ const Particle = (props: ParticleProps) => {
                 asteroid.rotation.x += Math.random()*.05
                 asteroid.rotation.y += Math.random()*.05
                 asteroid.rotation.z += Math.random()*.05
+                asteroid.scale.set(s,s,s)
             
             }
         })
@@ -94,7 +95,7 @@ const Particle = (props: ParticleProps) => {
                     onClick={(event) => console.log(event)}
                     onPointerOver={(event) => {
                         slowNum = 10
-                        s= 2.5
+                        s= 4.5
                         setHover(event.instanceId)
                     }}
                     onPointerOut={(event) =>{
@@ -106,7 +107,7 @@ const Particle = (props: ParticleProps) => {
                     rotation-x={Math.random()*Math.PI}
                     rotation-y={Math.random()*Math.PI}
                     position-y={(-2 + Math.random()) *4}
-                    scale={[props.maxSize, props.maxSize, props.maxSize]}
+                    scale={[s, s, s]}
                 >
                     {props.material}
                 </mesh>
@@ -120,20 +121,11 @@ const Saturn = (props: SaturnProps) => {
     const {camera} = useThree()
     console.log(camera)
 
-    //Zustand State
-    const randNum = useStore(state => state.randomNum)
-    const setRandomNum = useStore(state => state.setRandomNumber)
-
     // Refs
     const saturnRef = useRef<Mesh>()
 
-    // State
-    const [hovered, setHover] = useState<Number>()
-
     // Variables
-    let hoverSize = 10
     let s = props.maxSize
-    let slowNum = 1
 
     // Helpers
     function getMaterial(color : THREE.Color){
@@ -170,17 +162,6 @@ const Saturn = (props: SaturnProps) => {
         return particlesGeometry
     }
 
-    function rule3(v: any,vmin: any,vmax: any,tmin: any, tmax: any){
-        var nv = Math.max(Math.min(v,vmax), vmin);
-        var dv = vmax-vmin;
-        var pc = (nv-vmin)/dv;
-        var dt = tmax-tmin;
-        var tv = tmin + (pc*dt);
-        return tv;
-  
-    }
-
-
     //* PARTICLES *\\
      
     // Material
@@ -196,7 +177,6 @@ const Saturn = (props: SaturnProps) => {
     // Refs
     const planetGeometryRef = useRef<TetrahedronGeometry>()
     const ringRef = useRef<Mesh>()
-    const previousAsteroid = useRef<Mesh>()
     // Geometry
     const planetGeometry = <tetrahedronGeometry ref={planetGeometryRef} args={[20, 2]} />
 
@@ -222,20 +202,10 @@ const Saturn = (props: SaturnProps) => {
                     rotation-x={.2} 
                     rotation-z={.2}
                     onClick={(event) => console.log(event)}
-                    onPointerOver={(event) =>{ slowNum = 10}}
-                    onPointerOut={(event) => slowNum = 1}
                 >
                     {planetGeometry}
                     {planetMaterial}
                 </mesh>
-
-    //* RING *\\
-    let numParticles = 0
-    let distance
-    let angleStep = (Math.PI*2)/(numParticles + 1)
-    let asteroids : any = []
-    let particles : any = []
-    let asteroidRefs : any = []
 
     // Saturn Animations
     useFrame(() => {
@@ -244,6 +214,11 @@ const Saturn = (props: SaturnProps) => {
         }
     })
     
+    //* RING *\\
+    let numParticles = 0
+    let particles : any = []
+  
+
     for(let i = numParticles; i < props.particles; i++) {
         randomN = Math.floor(Math.random() * 5)
         planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
@@ -261,66 +236,6 @@ const Saturn = (props: SaturnProps) => {
                 i={i}
             />
         )
-    }
-
-    // Asteroids Animations
-    for(let i = numParticles; i < props.particles; i++) {
-        const asteroidRef = useRef<Mesh>()
-        let geometry = getGeometry(Math.random())
-        const x = (Math.random() - .5) * 10
-        const y = (Math.random() - .5) * 10
-        const z = (Math.random() - .5) * 10
-        randomN = Math.floor(Math.random() * 5)
-        distance = props.innerRadius + Math.random()*(props.outerRadius - props.innerRadius)
-        planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
-        useFrame((state) => {
-            let time = state.clock.getElapsedTime()
-            if(asteroidRef.current) {
-                let asteroid = asteroidRef.current
-                asteroid.userData.angle += (asteroid.userData.angularSpeed/slowNum)
-                // console.log(child.userData.angle)
-                let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
-                let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
-                asteroid.position.x = posX
-                asteroid.position.z = posZ
-                asteroid.rotation.x += Math.random()*.05
-                asteroid.rotation.y += Math.random()*.05
-                asteroid.rotation.z += Math.random()*.05
-            
-            }
-        })
-        const asteroid = 
-                <mesh 
-                    castShadow={true}
-                    ref={asteroidRef}
-                    key={i}
-                    userData={{
-                        po: null,
-                        distance: distance,
-                        angle: angleStep*i,
-                        angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
-                    }}
-                    onClick={(event) => console.log(event)}
-                    onPointerOver={(event) => {
-                        slowNum = 10
-                        s= 2.5
-                        setHover(event.instanceId)
-                    }}
-                    onPointerOut={(event) =>{
-                        slowNum = 1
-                        s = 1
-                        setHover(undefined)
-                    }}
-                    geometry={geometry}
-                    scale={[s, s, s]}
-                    rotation-x={Math.random()*Math.PI}
-                    rotation-y={Math.random()*Math.PI}
-                    position-y={(-2 + Math.random()) *4}
-                >   
-                {planetMaterial}
-                </mesh>
-        asteroids.push(asteroid)
-        asteroidRefs.push(asteroidRef)
     }
     
     return (
