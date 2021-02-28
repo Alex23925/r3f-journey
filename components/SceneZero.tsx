@@ -1,10 +1,15 @@
 import React, { useRef, useState, useMemo, useEffect, ReactNode, Suspense } from 'react'
 import { MeshProps, useFrame, useThree } from 'react-three-fiber'
-import { Color, Group, Mesh, MeshStandardMaterial, TetrahedronGeometry } from 'three'
+import { Camera, CameraHelper, Group, Mesh, PerspectiveCamera, TetrahedronGeometry, Usage, Vector3 } from 'three'
 import CameraControls from './CameraControls'
 import * as THREE from 'three'
-import { useGLTF } from '@react-three/drei'
+import {  useGLTF } from '@react-three/drei'
+import useAsteroidStore from '../hooks/asteroidStore'
 import burgerUrl from '../static/models/burger.glb'
+import { useHelper } from '@react-three/drei'
+
+
+//* ALL CREDIT GOES TO KARIM MAALOUL ON CODEPEN *\\
 
 interface SceneProps {
     elevation: number,
@@ -51,7 +56,6 @@ const Burger = () => {
     const {scene} = useGLTF(burgerUrl)
     scene.traverse((child) => {
         if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            console.log(child)
             child.castShadow = true
             child.receiveShadow = true 
         }
@@ -70,81 +74,118 @@ const Burger = () => {
     )
 }
 
-const Particle = (props: ParticleProps) => {
+const Asteroid = (props: ParticleProps) => {
     let asteroidRef = useRef<Mesh>()
     let i = props.i
-    const {camera} = useThree()
 
+    // solution might me to use zustand state to store hover and camera.lookAt
+    const {camera, setDefaultCamera} = useThree()
+
+    // Refs 
+    const cameraRef = useRef<PerspectiveCamera>()
     // userData
     let numParticles = 0
     let distance  = props.innerRadius + Math.random()*(props.outerRadius - props.innerRadius)
     let angleStep = (Math.PI*2)/(numParticles + 1)
 
-    // State
-    const [hovered, setHover] = useState<Number>()
-
     // Variables
-    let hoverSize = 10
     let s = props.maxSize
     let slowNum = 1
+    let clickedObject = ' '
+    let posY = (-2 + Math.random()) *4
+
+    // State
+    let clicked = false
+ 
+    // Zustand State 
+    const hovered = useAsteroidStore(state => state.hovered)
+    const setHovered = useAsteroidStore(state => state.setHovered)
+    const setCamera =  useAsteroidStore(state => state.setCamera)
+
+    //Helpers
+    //useHelper(cameraRef, CameraHelper, 0.2)
 
     useFrame((state) => {
             let time = state.clock.getElapsedTime()
-            if(asteroidRef.current) {
+            if(asteroidRef.current && cameraRef.current) {
                 let asteroid = asteroidRef.current
+                let cam = cameraRef.current
                 asteroid.userData.angle += (asteroid.userData.angularSpeed/slowNum)
+                cam.userData.angle += (cam.userData.angularSpeed/slowNum)
                 // console.log(child.userData.angle)
                 let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
                 let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
-                asteroid.position.x = posX
-                asteroid.position.z = posZ
+
+                let camPosX = Math.cos(cam.userData.angle)*cam.userData.distance
+                let camPosZ = Math.sin(cam.userData.angle)*cam.userData.distance
+                // asteroid.position.x = posX
+                // asteroid.position.z = posZ
                 asteroid.rotation.x += Math.random()*.05
                 asteroid.rotation.y += Math.random()*.05
                 asteroid.rotation.z += Math.random()*.05
                 asteroid.scale.set(s,s,s)
-            
+                cam.lookAt(new Vector3(0, 0, 0))
+                cam.position.x = camPosX 
+                cam.position.y =  posY
+                cam.position.z = camPosZ              
+                }
             }
-        })
-
-    return (
-                <mesh 
-                    castShadow={true}
-                    ref={asteroidRef}
-                    key={i}
-                    userData={{
-                        po: null,
-                        distance: distance,
-                        angle: angleStep*props.i,
-                        angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
-                    }}
-                    onClick={(event) => console.log(event)}
-                    onPointerOver={(event) => {
-                        slowNum = 10
-                        s= 4.5
-                        setHover(event.instanceId)
-                    }}
-                    onPointerOut={(event) =>{
-                        slowNum = 1
-                        s = 1
-                        setHover(undefined)
-                    }}
-                    geometry={props.geometry}
-                    rotation-x={Math.random()*Math.PI}
-                    rotation-y={Math.random()*Math.PI}
-                    position-y={(-2 + Math.random()) *4}
-                    scale={[s, s, s]}
-                >
-                    {props.material}
-                </mesh>
-            )
-
+        )
+  
     
+    return (
+        <perspectiveCamera
+            ref={cameraRef} 
+            userData={{
+                    po: null,
+                    distance: distance,
+                    angle: angleStep*props.i,
+                    angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
+                }}
+            position={[0, 0, 0]}
+            near={.1}
+            far={250}
+        >
+            <mesh 
+                castShadow={true}
+                ref={asteroidRef}
+                key={i}
+                name={i.toString()}
+                userData={{
+                    po: null,
+                    distance: distance,
+                    angle: angleStep*props.i,
+                    angularSpeed: rule3(distance, props.innerRadius, props.outerRadius, props.minSpeed, props.maxSpeed) 
+                }}
+                onClick={(event) => {
+                    clicked = clicked === false ? true : false
+                    console.log(clicked)
+                     if(cameraRef.current && asteroidRef.current) {
+                        setDefaultCamera(cameraRef.current)
+                    }
+                }}
+                onPointerOver={(event) => {
+                    slowNum = 10
+                    s = props.maxSize + .5
+                }}
+                onPointerOut={(event) =>{
+                    slowNum = 1 
+                    s = props.maxSize
+                }}
+                geometry={props.geometry}
+                rotation-x={Math.random()*Math.PI}
+                rotation-y={Math.random()*Math.PI}
+                position={[0, 0, -12]}
+                scale={[s, s, s]}
+            >
+                {props.material}
+            </mesh>
+        </perspectiveCamera>
+    ) 
+
 }
 
 const Saturn = (props: SaturnProps) => {
-    //* CAMERA *\\
-    const {camera} = useThree()
-    console.log(camera)
 
     // Refs
     const saturnRef = useRef<Mesh>()
@@ -230,14 +271,14 @@ const Saturn = (props: SaturnProps) => {
     
     //* RING *\\
     let numParticles = 0
-    let particles : any = []
+    let asteroids : any = []
   
 
     for(let i = numParticles; i < props.particles; i++) {
         randomN = Math.floor(Math.random() * 5)
         planetMaterial = getMaterial(new THREE.Color(colors[randomN]))
-        particles.push(
-            <Particle 
+        asteroids.push(
+            <Asteroid 
                 geometry={getGeometry(Math.random())} 
                 material={planetMaterial}
                 innerRadius={props.innerRadius}
@@ -256,7 +297,7 @@ const Saturn = (props: SaturnProps) => {
         <group>
             <Burger />
             <mesh ref={ringRef}>   
-                {particles}
+                {asteroids}
             </mesh>
         </group>
     )

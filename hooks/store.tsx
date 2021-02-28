@@ -45,6 +45,7 @@ const useStore = create<LinkState>((set, get) => ({
   spheresCopy: [],
   boxesCopy: [],
   
+
   //Sphere Create/Delete Functions
   createSphere: (sphere) => set(state => ({spheres: [...state.spheres, sphere]})),
   deleteSphere: () => set(state => ({spheres: state.spheresCopy})), 

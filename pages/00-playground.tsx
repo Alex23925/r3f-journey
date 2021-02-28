@@ -19,13 +19,13 @@ export default function playground00() {
         wireframe: false,
         color: "#F235C9",
         hoverColor: "#1326F9",
-        innerRadius: 30,
-        outerRadius: 50,
-        particles: 25,
+        innerRadius: 40,
+        outerRadius: 100,
+        particles: 8,
         minSpeed: 0.005,
-        maxSpeed: 0.026,
+        maxSpeed: 0.02,
         minSize: .01,
-        maxSize: 2
+        maxSize: 1.5
     })
 
 
@@ -37,7 +37,7 @@ export default function playground00() {
                 lessonLink={'/00-playground'}
                 chNum={1}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(0,50,175)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0,50,125)}>
                     <SceneZero 
                         elevation={params.elevation}
                         wireframe={params.wireframe} 
