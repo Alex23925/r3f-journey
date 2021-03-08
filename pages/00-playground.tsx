@@ -4,7 +4,6 @@ import SceneZero from '../components/SceneZero'
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
 import React, { useState } from 'react'
 import * as THREE from 'three'
-
 // ALL CREDIT GOES TO KARIM MAALOUL ON CODEPEN
 // NOTE
 // DatGUI missing styling so have to import it
@@ -21,9 +20,9 @@ export default function playground00() {
         hoverColor: "#1326F9",
         innerRadius: 40,
         outerRadius: 100,
-        particles: 8,
+        particles: 4,
         minSpeed: 0.005,
-        maxSpeed: 0.02,
+        maxSpeed: 0.01,
         minSize: .01,
         maxSize: 1.5
     })

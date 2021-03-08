@@ -4,10 +4,9 @@ import { Camera, CameraHelper, Group, Mesh, PerspectiveCamera, TetrahedronGeomet
 import CameraControls from './CameraControls'
 import * as THREE from 'three'
 import {  useGLTF } from '@react-three/drei'
-import useAsteroidStore from '../hooks/asteroidStore'
 import burgerUrl from '../static/models/burger.glb'
-import { useHelper } from '@react-three/drei'
-
+import { useHelper, Html } from '@react-three/drei'
+import '../styles/playground.scss'
 
 //* ALL CREDIT GOES TO KARIM MAALOUL ON CODEPEN *\\
 
@@ -69,7 +68,7 @@ const Burger = () => {
 
     return (
         <group rotation-x={Math.PI/6} position-y={-12} receiveShadow={true} ref={burgerRef}>
-            <primitive scale={[4.5, 4.5, 4.5]} object={scene} />
+            <primitive scale={[2.5, 2.5, 2.5]} object={scene} />
         </group>
     )
 }
@@ -95,12 +94,7 @@ const Asteroid = (props: ParticleProps) => {
     let posY = (-2 + Math.random()) *4
 
     // State
-    let clicked = false
- 
-    // Zustand State 
-    const hovered = useAsteroidStore(state => state.hovered)
-    const setHovered = useAsteroidStore(state => state.setHovered)
-    const setCamera =  useAsteroidStore(state => state.setCamera)
+    let clicked = false 
 
     //Helpers
     //useHelper(cameraRef, CameraHelper, 0.2)
@@ -113,8 +107,8 @@ const Asteroid = (props: ParticleProps) => {
                 asteroid.userData.angle += (asteroid.userData.angularSpeed/slowNum)
                 cam.userData.angle += (cam.userData.angularSpeed/slowNum)
                 // console.log(child.userData.angle)
-                let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
-                let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
+                // let posX = Math.cos(asteroid.userData.angle)*asteroid.userData.distance
+                // let posZ = Math.sin(asteroid.userData.angle)*asteroid.userData.distance
 
                 let camPosX = Math.cos(cam.userData.angle)*cam.userData.distance
                 let camPosZ = Math.sin(cam.userData.angle)*cam.userData.distance
@@ -132,7 +126,8 @@ const Asteroid = (props: ParticleProps) => {
             }
         )
   
-    
+        // for orbit controls maybe nest a camera within a camera so one is spinning and the other can me moved freely
+        
     return (
         <perspectiveCamera
             ref={cameraRef} 
@@ -179,6 +174,11 @@ const Asteroid = (props: ParticleProps) => {
                 scale={[s, s, s]}
             >
                 {props.material}
+                <Html scaleFactor={10}>
+                    <div className="asteroid">
+                        Asteroid
+                    </div>
+                </Html>
             </mesh>
         </perspectiveCamera>
     ) 

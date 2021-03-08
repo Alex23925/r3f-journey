@@ -168,7 +168,12 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
                         <Link href='/23-realistic-render'>
                             <a className="link--styles">16. Realistic Render</a>
                         </Link>
-                    </div>                           
+                    </div>      
+                    <div className="link">
+                        <Link href='/24-shaders'>
+                            <a className="link--styles">17. Shaders</a>
+                        </Link>
+                    </div>                     
                 </motion.section>
             </motion.div>
             <main className="page-wrapper">{children}</main>
