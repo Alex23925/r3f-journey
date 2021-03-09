@@ -13,7 +13,7 @@ void main(){
     vec4 modelPosition= modelMatrix * vec4(position,1.);
 
     float elevation = sin(modelPosition.x * uFrequency.x + uTime)*.1;
-    elevation += sin(modelPosition.y*uFrequency.y+uTime)*.1;
+    elevation += cos(modelPosition.y*uFrequency.y+uTime)*.1;
 
     modelPosition.z += elevation;
 

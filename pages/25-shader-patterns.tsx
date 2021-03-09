@@ -1,13 +1,13 @@
-import Layout from '../components/Layout'
-import CanvasLayout from '../components/CanvasLayout'
+import Layout from "../components/Layout";
+import CanvasLayout from "../components/CanvasLayout";
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
-import React, { useState } from 'react'
-import * as THREE from 'three'
+import React, { useState } from "react";
+import * as THREE from "three";
 // NOTE
 // DatGUI missing styling so have to import it
 // If using scss go to that file path and change the css extension to scss
-import 'react-dat-gui/dist/index.scss'
-import SceneTwentyFour from '../components/ch4-scenes/SceneTwentyFour';
+import "react-dat-gui/dist/index.scss";
+import SceneTwentyFive from "../components/ch4-scenes/SceneTwentyFive";
 
 //* TIPS *\\
 // bruno used a in front of aRandom for attribute so
@@ -17,8 +17,7 @@ import SceneTwentyFour from '../components/ch4-scenes/SceneTwentyFour';
 
 //* LEARN TO MAKE A SPHERE THAT RIPPLES WHEN CLICKED WITH SHADERS *\\
 
-
-export default function debugUI10() {
+export default function shaderPatterns25() {
     // State
     const [params, setParams] = useState({
         elevation: 0,
@@ -27,41 +26,47 @@ export default function debugUI10() {
         color: "0xff0000",
         hoverColor: "0xff0000",
         uFrequencyX: 10,
-        uFrequencyY: 10
-
-    })
-
+        uFrequencyY: 10,
+    });
 
     return (
         <>
             <Layout
-                lessonName='.17 Shaders'
-                lessonLink='/24-shaders'
+                lessonName=".17 Shader Patterns"
+                lessonLink="/25-shader-patterns"
                 lessonNum={10}
                 chNum={1}
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 2)}>
-                    <SceneTwentyFour 
+                    <SceneTwentyFive
                         elevation={params.elevation}
-                        wireframe={params.wireframe} 
-                        color={params.color} 
-                        hoverColor={params.hoverColor} 
+                        wireframe={params.wireframe}
+                        color={params.color}
+                        hoverColor={params.hoverColor}
                         uFrequencyX={params.uFrequencyX}
                         uFrequencyY={params.uFrequencyY}
                     />
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>
-                    <DatNumber path="elevation" min={-3} max={3} step={.01} />
-                    <DatNumber path="uFrequencyX" min={0} max={20} step={.01} />
-                    <DatNumber path="uFrequencyY" min={0} max={20} step={.01} />
+                    <DatNumber path="elevation" min={-3} max={3} step={0.01} />
+                    <DatNumber
+                        path="uFrequencyX"
+                        min={0}
+                        max={20}
+                        step={0.01}
+                    />
+                    <DatNumber
+                        path="uFrequencyY"
+                        min={0}
+                        max={20}
+                        step={0.01}
+                    />
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />
-                    <DatBoolean path='wireframe' label='wireframe' />
+                    <DatBoolean path="wireframe" label="wireframe" />
                 </DatGui>
-
             </Layout>
         </>
-
-    )
+    );
 }
