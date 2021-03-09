@@ -30,12 +30,12 @@ void main()
     // strength=step(.8,strength);
     
     // Pattern 11
-    float strength=step(.5,mod(vUv.x*10.,1.));
+    //float strength=step(.5,mod(vUv.x*2.,1.));
     //strength-=step(.8,mod(vUv.y*10.,1.));
     
     // Pattern 12
-    // float barX=step(.2,mod(vUv.x*10.,1.));
-    // barX*=step(.8,mod(vUv.y*10.,1.));
+    float barX=step(.7,mod(.01-(vUv.x*2.),1.));
+    barX*=step(.7,mod(vUv.y*2.,1.));
     
     // float barY=step(.8,mod(vUv.x*10.,1.));
     // barY*=step(.2,mod(vUv.y*10.,1.));
@@ -51,5 +51,5 @@ void main()
     
     // float arrowPattern=barX+barY;
     
-    gl_FragColor=vec4(strength,0.0,0.0,1.);
+    gl_FragColor=vec4(barX,barX,barX,1.);
 }

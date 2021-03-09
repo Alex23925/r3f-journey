@@ -37,7 +37,7 @@ export default function shaderPatterns25() {
                 lessonNum={10}
                 chNum={1}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 2)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(0, 0, 1)}>
                     <SceneTwentyFive
                         elevation={params.elevation}
                         wireframe={params.wireframe}
