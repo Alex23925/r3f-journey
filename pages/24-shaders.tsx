@@ -9,6 +9,15 @@ import * as THREE from 'three'
 import 'react-dat-gui/dist/index.scss'
 import SceneTwentyFour from '../components/ch4-scenes/SceneTwentyFour';
 
+//* TIPS *\\
+// bruno used a in front of aRandom for attribute so
+// a = attribute
+// u = uniform
+// v = varying
+
+//* LEARN TO MAKE A SPHERE THAT RIPPLES WHEN CLICKED WITH SHADERS *\\
+
+
 export default function debugUI10() {
     // State
     const [params, setParams] = useState({
@@ -16,7 +25,10 @@ export default function debugUI10() {
         visible: true,
         wireframe: false,
         color: "0xff0000",
-        hoverColor: "0xff0000"
+        hoverColor: "0xff0000",
+        uFrequencyX: 20,
+        uFrequencyY: 20
+
     })
 
 
@@ -34,11 +46,15 @@ export default function debugUI10() {
                         wireframe={params.wireframe} 
                         color={params.color} 
                         hoverColor={params.hoverColor} 
+                        uFrequencyX={params.uFrequencyX}
+                        uFrequencyY={params.uFrequencyY}
                     />
                 </CanvasLayout>
 
                 <DatGui data={params} onUpdate={setParams}>
                     <DatNumber path="elevation" min={-3} max={3} step={.01} />
+                    <DatNumber path="uFrequencyX" min={0} max={20} step={.01} />
+                    <DatNumber path="uFrequencyY" min={0} max={20} step={.01} />
                     <DatColor path="color" />
                     <DatColor path="hoverColor" label="hover color" />
                     <DatBoolean path='wireframe' label='wireframe' />

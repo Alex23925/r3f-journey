@@ -1,56 +1,94 @@
-import React, { useRef, useMemo, useEffect } from 'react'
-import { MeshProps, useFrame } from 'react-three-fiber'
-import type { Mesh, PlaneBufferGeometry, PlaneGeometry } from 'three'
-import CameraControls from '../CameraControls'
-import vertex from '../../shaders/vertex.glsl'
-import fragment from '../../shaders/fragment.glsl'
-import * as THREE from 'three'
-
-//* TIPS *\\
-// bruno used a in front of aRandom for attribute so
-// a = attribute
-// u = uniform
-// v = varying
+import React, { useRef, useMemo, useEffect } from "react";
+import { useFrame } from "react-three-fiber";
+import type { PlaneBufferGeometry, PlaneGeometry, ShaderMaterial } from "three";
+import CameraControls from "../CameraControls";
+import vertex from "../../shaders/vertex.glsl";
+import fragment from "../../shaders/fragment.glsl";
+import * as THREE from "three";
+import texture from "../../static/textures/flag-french.jpg";
 
 interface SceneProps {
-    elevation: number,
-    color: string,
-    hoverColor:string,
-    wireframe: boolean
+    elevation: number;
+    color: string;
+    hoverColor: string;
+    wireframe: boolean;
+    uFrequencyX: number;
+    uFrequencyY: number;
 }
 
 interface BoxProps {
-    elevation: number,
-    color: string,
-    hoverColor: string,
-    wireframe: boolean
+    elevation: number;
+    color: string;
+    hoverColor: string;
+    wireframe: boolean;
 }
 
 export default function SceneTwentyFour(props: SceneProps) {
     
-    const geometry  = useMemo(() => new THREE.PlaneBufferGeometry(1, 1, 32, 32), [])
+    // Texture Loader
+    const textureLoader = useMemo(() => new THREE.TextureLoader(), [texture]);
 
-    const count = geometry.attributes.position.count
-    const randoms = new Float32Array(count)
+    const flagTexture = textureLoader.load(texture);
 
-    for(let i = 0; i < count; i++) {
-        randoms[i] = Math.random()
+    // Refs
+    const geometryRef = useRef<PlaneBufferGeometry>()
+    const shaderMaterialRef = useRef<ShaderMaterial>()
+
+    let count = 0;
+    if (geometryRef.current) {
+        count = geometryRef.current.attributes.position.count;
+    }
+    const randoms = new Float32Array(count);
+
+    for (let i = 0; i < count; i++) {
+        randoms[i] = Math.random();
     }
 
-    geometry.setAttribute('aRandom', new THREE.BufferAttribute(randoms, 1))
+    geometryRef.current?.setAttribute(
+        "aRandom",
+        new THREE.BufferAttribute(randoms, 1)
+    );
+
+    const uniforms = useMemo(() => {
+        return {
+            uFrequency: {
+                value: new THREE.Vector2(10, 10),
+            },
+            uTime: { value: 0 },
+            uColor: { value: new THREE.Color("orange") },
+            uTexture: { value: flagTexture },
+        };
+    }, []);
+
+    useFrame((_) => {
+        let time = _.clock.getElapsedTime();
+        uniforms.uTime.value = time * 2.0;
+    });
+
+    if (shaderMaterialRef.current) {
+        shaderMaterialRef.current.uniforms.uFrequency.value = new THREE.Vector2(
+            props.uFrequencyX,
+            props.uFrequencyY
+        );
+    }
+    
 
     return (
         <>
             <ambientLight />
-            <pointLight position={[10, 10, 10]} />
-            <mesh geometry={geometry}>
-                <rawShaderMaterial 
-                    vertexShader={vertex} 
-                    fragmentShader={fragment} 
+            <pointLight position={[5, 5, 5]} />
+            <mesh>
+                <planeBufferGeometry args={[1, 1, 32, 32]} />
+                <shaderMaterial
+                    ref={shaderMaterialRef}
+                    vertexShader={vertex}
+                    fragmentShader={fragment}
                     side={THREE.DoubleSide}
+                    uniforms={uniforms}
                 />
+                <axesHelper />
             </mesh>
             <CameraControls />
         </>
-    )
+    );
 }
