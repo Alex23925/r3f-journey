@@ -1,4 +1,5 @@
 #define PI 3.1415926535897932384626433832795
+uniform float uTime;
 
 varying vec2 vUv;
 
@@ -61,8 +62,29 @@ float cnoise(vec2 P)
     return 2.3*n_xy;
 }
 
+vec3 hsb2rgb(in vec3 c){
+    vec3 rgb=clamp(
+        abs(mod(c.x*6.+vec3(0.,4.,2.),6.)-3.)-1.,
+        0.,
+        1.
+    );
+    rgb=rgb*rgb*(3.-2.*rgb);
+    return c.z*mix(vec3(1.),rgb,c.y);
+}
+
+vec3 rectangle(vec2 thickness,vec2 position){
+    vec2 uv=vUv;
+    vec2 bl=step(vec2(thickness.x - position.x) + position.y,uv);// bottom-left
+    vec2 tr=step(vec2(thickness.y),1.-uv);//top-right
+    
+    vec3 rect=vec3(0.);
+    rect=vec3(bl.x*bl.y*tr.x*tr.y);
+    return rect;
+}
+
 void main()
 {
+    vec2 uv=vec2(vUv);
     // Pattern 3
     //float strength = vUv.x;
     
@@ -250,24 +272,62 @@ void main()
     
     // Pattern 38
     //float pattern=step(.9,sin(cnoise(vUv*10.)*20.));
-
+    
     // Pattern 39
-    float pattern=step(.9,sin(cnoise(vUv*10.)*20.));
+    //float pattern=step(.9,sin(cnoise(vUv*10.)*20.));
     
     // clamp the strength
-    float clampedPattern = clamp(pattern, 0.0, 1.0);
-    vec3 blackColor = vec3(0.0);
-    vec3 uvColor = vec3(vUv, 1.0);
-
-    vec3 mixedColor = mix(blackColor, uvColor, clampedPattern);
-
-    // Pattern ??
-    // float pi = 3.14;
-    // float angle = pi/4.0;
-    // float radius = 0.5;
-    // float x = cos(angle) * radius;
-    // float y = sin(angle) * radius;
-    // float pattern = x + y;
+    // float clampedPattern = clamp(pattern, 0.0, 1.0);
+    // vec3 blackColor = vec3(0.0);
+    // vec3 uvColor = vec3(vUv, 1.0);
     
-    gl_FragColor=vec4(mixedColor,1.);
+    // vec3 mixedColor = mix(blackColor, uvColor, clampedPattern);
+    
+    // Sunset to Sunrise pattern
+    // vec3 mixedColors=vec3(0.);
+    
+    // vec3 color1=vec3(.2039,.3882,.8863);
+    // vec3 color2=vec3(.8784,.2863,.051);
+    
+    // vec3 uvX=vec3(vUv.x);
+    // //uvX.r=abs(sin(vUv.x-uTime));
+    // uvX.b=abs(sin(vUv.x-uTime));
+    
+    // mixedColors=mix(color1,color2,uvX);
+    
+    // mixedColors.g=vUv.x;
+    
+    // Rainbow Pattern
+    // vec3 color1=vec3(1.,0.,0.);
+    // vec3 color2=vec3(.098,0.,1.);
+    
+    // vec3 rainbow=vec3(0.);
+    
+    // rainbow=mix(color1,color2,uv.x);
+    
+    // rainbow.r=pow(cos(.2-((PI*uv.x)/2.)),5.);
+    // rainbow.g=pow(cos(.8-((PI*uv.x)/2.)),5.);
+    // rainbow.b=pow(cos(1.4-((PI*uv.x)/2.)),5.);
+    
+    // Polar Coordinate Rainbow + one hue back to rainbow
+    // vec3 polarRainbow=vec3(0.);
+    // vec2 center=.5-uv;
+    // float angle=atan(center.y,center.x);
+    // float radius=length(center)*2.;
+    
+    // float fullCircle=(angle/(2.*PI))+.5;
+    
+    // // bouncy sin function that stay in place
+    // float angleManipulated=abs(sin(1.5*(fullCircle - uTime * .5))+sin(1.5*(fullCircle+uTime * .5)));
+    
+    // float angleManipulated2 = abs(sin(pow(2.0,sin(fullCircle))-uTime)+cos(fullCircle));
+    
+    // polarRainbow=hsb2rgb(vec3(angleManipulated,radius,1.));
+    
+    // **** SHAPES FROM BOOK OF SHADERS
+    vec2 thickness=vec2(.05,.05);
+    vec2 position=vec2(0.0,0.);
+    vec3 rect=rectangle(thickness, position);
+    
+    gl_FragColor=vec4(rect,1.);
 }

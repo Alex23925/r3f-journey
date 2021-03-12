@@ -59,10 +59,10 @@ export default function SceneTwentyFive(props: SceneProps) {
         }
     }, [])
 
-    // useFrame((_) => {
-    //     let time = _.clock.getElapsedTime();
-    //     uniforms.uTime.value = time * 2.0;
-    // });
+    useFrame((_) => {
+        let time = _.clock.getElapsedTime();
+        uniforms.uTime.value = time;
+    });
 
     if (shaderMaterialRef.current) {
         shaderMaterialRef.current.uniforms.uFrequency.value = new THREE.Vector2(
