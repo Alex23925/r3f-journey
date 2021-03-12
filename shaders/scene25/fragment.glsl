@@ -325,9 +325,15 @@ void main()
     // polarRainbow=hsb2rgb(vec3(angleManipulated,radius,1.));
     
     // **** SHAPES FROM BOOK OF SHADERS
-    vec2 thickness=vec2(.05,.05);
-    vec2 position=vec2(0.0,0.);
-    vec3 rect=rectangle(thickness, position);
+    vec2 thickness=vec2(.4,.4);
+    vec2 thickness2 = vec2(thickness.x + .02, thickness.y + .02);
+    vec2 position=vec2(0.0,0.0);
+    vec3 rect= rectangle(thickness, position);
+    vec3 rect2 = 1.0-rectangle(thickness2, position);
     
-    gl_FragColor=vec4(rect,1.);
+    vec3 rectOutline = 1.0-(rect*rect2);
+
+    vec3 rectRepeat = vec3(mod(rectOutline, .1));
+
+    gl_FragColor=vec4(rectOutline,1.);
 }
