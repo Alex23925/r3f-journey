@@ -1,22 +1,27 @@
-import { ReactNode } from 'react'
-import Link from 'next/link'
-import Meta from './Meta'
-import {useAnimation, motion} from 'framer-motion'
-import {useState} from 'react'
-import '../styles/layout.scss'
-import useStore from '../hooks/store'
+import { ReactNode } from "react";
+import Link from "next/link";
+import Meta from "./Meta";
+import { useAnimation, motion } from "framer-motion";
+import { useState } from "react";
+import "../styles/layout.scss";
+import useStore from "../hooks/store";
 
 interface LayoutProps {
-    lessonName: string
-    lessonLink: string
-    lessonNum: number
-    chNum: number
-    children: ReactNode
+    lessonName: string;
+    lessonLink: string;
+    lessonNum: number;
+    chNum: number;
+    children: ReactNode;
 }
 
-export default function Layout({ lessonName, lessonLink, lessonNum, chNum, children }: LayoutProps) {
-
-    // Zustand State 
+export default function Layout({
+    lessonName,
+    lessonLink,
+    lessonNum,
+    chNum,
+    children,
+}: LayoutProps) {
+    // Zustand State
     // const numLinks = useStore(state => state.numLinks)
     // console.log(numLinks)
 
@@ -31,7 +36,7 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
     //     </div>
     //     );
 
-    const easing = [.25, .1, .25, 1];
+    const easing = [0.25, 0.1, 0.25, 1];
 
     const start = {
         initial: {
@@ -40,12 +45,13 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
         },
         animate: {
             y: 0,
-            x: -240,}
-    }
+            x: -240,
+        },
+    };
 
-    const controlHideNav = useAnimation()
+    const controlHideNav = useAnimation();
 
-    const [navOpen, setNavOpen] = useState(true)
+    const [navOpen, setNavOpen] = useState(true);
 
     return (
         <>
@@ -78,16 +84,6 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
                 ></motion.div>
 
                 <motion.section className="nav-bar nav-bar--styles">
-                    <div className="link">
-                        <Link href="/00-playground">
-                            <a className="link--styles">00. Playground</a>
-                        </Link>
-                    </div>
-                    <div className="link">
-                        <Link href="/">
-                            <a className="link--styles">01. Basic Scene</a>
-                        </Link>
-                    </div>
                     <div className="link">
                         <Link href="/geometries-09">
                             <a className="link--styles">02. Geometries</a>
@@ -171,6 +167,11 @@ export default function Layout({ lessonName, lessonLink, lessonNum, chNum, child
                     <div className="link">
                         <Link href="/25-shader-patterns">
                             <a className="link--styles">18. Shader Patterns</a>
+                        </Link>
+                    </div>
+                    <div className="link">
+                        <Link href="/26-raging-sea">
+                            <a className="link--styles">19. Raging Sea</a>
                         </Link>
                     </div>
                 </motion.section>
