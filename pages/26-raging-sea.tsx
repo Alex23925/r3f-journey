@@ -1,5 +1,6 @@
 import Layout from "../components/Layout";
 import CanvasLayout from "../components/CanvasLayout";
+import { useControls } from "leva";
 import DatGui, { DatColor, DatBoolean, DatNumber } from "react-dat-gui";
 import React, { useState } from "react";
 import * as THREE from "three";
@@ -18,19 +19,66 @@ import SceneTwentySix from "../components/ch4-scenes/SceneTwentySix";
 //* LEARN TO MAKE A SPHERE THAT RIPPLES WHEN CLICKED WITH SHADERS *\\
 
 export default function ragingSea26() {
-    // State
-    const [params, setParams] = useState({
-        elevation: 0,
-        visible: true,
-        wireframe: false,
-        color: "#9bd8ff",
-        depthColor: "#186691",
-        uColorOffset: 0.08,
-        uColorMultiplier: 5,
-        uFrequencyX: 4,
-        uFrequencyY: 1.5,
-        uBigWavesElevation: 0.2,
-        uBigWavesSpeed: 0.75,
+    // LEVA
+    const { elevation } = useControls({
+        elevation: {
+            value: 0,
+            min: -3,
+            max: 3,
+            step: .01,
+        },
+    });
+    const { visible } = useControls({ visible:false });
+    const { wireframe } = useControls({ wireframe: false });
+    const { color } = useControls({ color: "#9bd8ff" });
+    const { depthColor } = useControls({ depthColor: "#186691" });
+    const { uColorOffset } = useControls({
+        uColorOffset: {
+            value: 0.08,
+            min: 0,
+            max: 5,
+            step: 0.01,
+        },
+    });
+    const { uColorMultiplier } = useControls({
+        uColorMultiplier: {
+            value: 5,
+            min: 0,
+            max: 10,
+            step: 0.01,
+        },
+    });
+    const { uFrequencyX } = useControls({
+        uFrequencyX: {
+            value: 4,
+            min: 0,
+            max: 10,
+            step: 0.01,
+        },
+    });
+    const { uFrequencyY } = useControls({
+        uFrequencyY: {
+            value: 1.5,
+            min: 0,
+            max: 20,
+            step: 0.01,
+        },
+    });
+    const { uBigWavesElevation } = useControls({
+        uBigWavesElevation: {
+            value: 0.2,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+    });
+    const { uBigWavesSpeed } = useControls({
+        uBigWavesSpeed: {
+            value: 0.75,
+            min: 0,
+            max: 5,
+            step: 0.01,
+        },
     });
 
     return (
@@ -43,61 +91,18 @@ export default function ragingSea26() {
             >
                 <CanvasLayout cameraPosition={new THREE.Vector3(1.2, 1.2, 1.2)}>
                     <SceneTwentySix
-                        elevation={params.elevation}
-                        wireframe={params.wireframe}
-                        color={params.color}
-                        depthColor={params.depthColor}
-                        uColorOffset={params.uColorOffset}
-                        uColorMultiplier={params.uColorMultiplier}
-                        uFrequencyX={params.uFrequencyX}
-                        uFrequencyY={params.uFrequencyY}
-                        uBigWavesElevation={params.uBigWavesElevation}
-                        uBigWavesSpeed={params.uBigWavesSpeed}
+                        elevation={elevation}
+                        wireframe={wireframe}
+                        color={color}
+                        depthColor={depthColor}
+                        uColorOffset={uColorOffset}
+                        uColorMultiplier={uColorMultiplier}
+                        uFrequencyX={uFrequencyX}
+                        uFrequencyY={uFrequencyY}
+                        uBigWavesElevation={uBigWavesElevation}
+                        uBigWavesSpeed={uBigWavesSpeed}
                     />
                 </CanvasLayout>
-
-                <DatGui data={params} onUpdate={setParams}>
-                    <DatNumber path="elevation" min={-3} max={3} step={0.01} />
-                    <DatNumber
-                        path="uFrequencyX"
-                        min={0}
-                        max={20}
-                        step={0.01}
-                    />
-                    <DatNumber
-                        path="uFrequencyY"
-                        min={0}
-                        max={20}
-                        step={0.01}
-                    />
-                    <DatNumber
-                        path="uBigWavesElevation"
-                        min={0}
-                        max={1}
-                        step={0.001}
-                    />
-                    <DatNumber
-                        path="uBigWavesSpeed"
-                        min={0}
-                        max={5}
-                        step={0.001}
-                    />
-                    <DatNumber
-                        path="uColorMultiplier"
-                        min={0}
-                        max={10}
-                        step={0.001}
-                    />
-                    <DatNumber
-                        path="uColorOffset"
-                        min={0}
-                        max={5}
-                        step={0.001}
-                    />
-                    <DatColor path="color" />
-                    <DatColor path="depthColor" label="depth color" />
-                    <DatBoolean path="wireframe" label="wireframe" />
-                </DatGui>
             </Layout>
         </>
     );

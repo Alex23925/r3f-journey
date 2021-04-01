@@ -4,7 +4,6 @@ import Meta from "./Meta";
 import { useAnimation, motion } from "framer-motion";
 import { useState } from "react";
 import "../styles/layout.scss";
-import useStore from "../hooks/store";
 
 interface LayoutProps {
     lessonName: string;
@@ -38,17 +37,6 @@ export default function Layout({
 
     const easing = [0.25, 0.1, 0.25, 1];
 
-    const start = {
-        initial: {
-            y: 0,
-            x: -240,
-        },
-        animate: {
-            y: 0,
-            x: -240,
-        },
-    };
-
     const controlHideNav = useAnimation();
 
     const [navOpen, setNavOpen] = useState(true);
@@ -64,7 +52,7 @@ export default function Layout({
                         if (navOpen) {
                             controlHideNav.start({
                                 y: 0,
-                                x: 248,
+                                x: 280,
                                 transition: {
                                     duration: 0.4,
                                     ease: easing,
@@ -172,6 +160,16 @@ export default function Layout({
                     <div className="link">
                         <Link href="/26-raging-sea">
                             <a className="link--styles">19. Raging Sea</a>
+                        </Link>
+                    </div>
+                    <div className="link">
+                        <Link href="/27-animated-galaxy">
+                            <a className="link--styles">20. Animated Galaxy</a>
+                        </Link>
+                    </div>
+                    <div className="link">
+                        <Link href="/28-modified-materials">
+                            <a className="link--styles">28. Modified Materials</a>
                         </Link>
                     </div>
                 </motion.section>
