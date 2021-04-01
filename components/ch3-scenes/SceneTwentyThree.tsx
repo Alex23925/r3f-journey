@@ -1,140 +1,141 @@
-import React, { useRef, useState, useEffect, Suspense, useMemo } from 'react'
-import { MeshProps, useFrame, useThree } from 'react-three-fiber'
-import * as THREE from 'three'
-import CameraControls from '../CameraControls'
-import { useGLTF } from '@react-three/drei'
-import burgerUrl from '../../static/models/burger.glb'
-import helmetUrl from '../../static/models/FlightHelmet/glTF/FlightHelmet.gltf'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet.bin'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_BaseColor.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_Normal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_OcclusionRoughMetal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_BaseColor.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_Normal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_OcclusionRoughMetal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_BaseColor.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_Normal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_Normal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_OcclusionRoughMetal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_BaseColor.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_Normal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_OcclusionRoughMetal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_BaseColor.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_Normal.png'
-import '../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_OcclusionRoughMetal.png'
+import React, { useRef, useState, useEffect, Suspense, useMemo } from "react";
+import { MeshProps, useFrame, useThree } from "react-three-fiber";
+import * as THREE from "three";
+import CameraControls from "../CameraControls";
+import { useGLTF } from "@react-three/drei";
+import burgerUrl from "../../static/models/burger.glb";
+import helmetUrl from "../../static/models/FlightHelmet/glTF/FlightHelmet.gltf";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet.bin";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_BaseColor.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_Normal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_GlassPlasticMat_OcclusionRoughMetal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_BaseColor.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_Normal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LeatherPartsMat_OcclusionRoughMetal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_BaseColor.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_Normal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_Normal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_LensesMat_OcclusionRoughMetal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_BaseColor.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_Normal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_MetalPartsMat_OcclusionRoughMetal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_BaseColor.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_Normal.png";
+import "../../static/models/FlightHelmet/glTF/FlightHelmet_Materials_RubberWoodMat_OcclusionRoughMetal.png";
 
-import px from '../../static/textures/environmentMaps/0/px.jpg'
-import nx from '../../static/textures/environmentMaps/0/nx.jpg'
-import py from '../../static/textures/environmentMaps/0/py.jpg'
-import ny from '../../static/textures/environmentMaps/0/ny.jpg'
-import pz from '../../static/textures/environmentMaps/0/pz.jpg'
-import nz from '../../static/textures/environmentMaps/0/nz.jpg'
+import px from "../../static/textures/environmentMaps/0/px.jpg";
+import nx from "../../static/textures/environmentMaps/0/nx.jpg";
+import py from "../../static/textures/environmentMaps/0/py.jpg";
+import ny from "../../static/textures/environmentMaps/0/ny.jpg";
+import pz from "../../static/textures/environmentMaps/0/pz.jpg";
+import nz from "../../static/textures/environmentMaps/0/nz.jpg";
 
 interface SceneProps {
-    lightIntensity: number,
-    lightPositionX: number,
-    lightPositionY: number,
-    lightPositionZ: number,
-    helmetPositionX: number,
-    helmetPositionY: number,
-    helmetPositionZ: number,
-    helmetRotationY: number,
-    envMapIntensity: number,
+    lightIntensity: number;
+    lightPositionX: number;
+    lightPositionY: number;
+    lightPositionZ: number;
+    helmetPositionX: number;
+    helmetPositionY: number;
+    helmetPositionZ: number;
+    helmetRotationY: number;
+    envMapIntensity: number;
 }
 
 interface FlightHelmetProps {
-    helmetPositionX: number,
-    helmetPositionY: number,
-    helmetPositionZ: number,
-    helmetRotationY: number,
-    envMap: THREE.CubeTexture,
-    envMapIntensity: number,
+    helmetPositionX: number;
+    helmetPositionY: number;
+    helmetPositionZ: number;
+    helmetRotationY: number;
+    envMap: THREE.CubeTexture;
+    envMapIntensity: number;
 }
 
 interface EnvironmentProps {
-    envMap: THREE.CubeTexture
+    envMap: THREE.CubeTexture;
 }
 
 const Burger = () => {
-    const {scene} = useGLTF(burgerUrl)
+    const { scene } = useGLTF(burgerUrl);
     scene.traverse((child) => {
-        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            console.log(child)
-            child.castShadow = true
-            child.receiveShadow = true 
+        if (
+            child instanceof THREE.Mesh &&
+            child.material instanceof THREE.MeshStandardMaterial
+        ) {
+            console.log(child);
+            child.castShadow = true;
+            child.receiveShadow = true;
         }
-    })
-    return (
-        <primitive scale={[0.5, 0.5, 0.5]} object={scene} />
-    )
-}
+    });
+    return <primitive scale={[0.5, 0.5, 0.5]} object={scene} />;
+};
 
-const FlightHelmet = (props : FlightHelmetProps) => {
-    const {scene} = useGLTF(helmetUrl)
-    console.log(scene)
+const FlightHelmet = (props: FlightHelmetProps) => {
+    const { scene } = useGLTF(helmetUrl);
+    console.log(scene);
     scene.traverse((child) => {
-        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
-            child.material.envMap = props.envMap
-            child.material.envMapIntensity = props.envMapIntensity
-            child.castShadow = true
-            child.receiveShadow = true 
+        if (
+            child instanceof THREE.Mesh &&
+            child.material instanceof THREE.MeshStandardMaterial
+        ) {
+            child.material.envMap = props.envMap;
+            child.material.envMapIntensity = props.envMapIntensity;
+            child.castShadow = true;
+            child.receiveShadow = true;
         }
-    })
+    });
     return (
-        <group rotation-y={props.helmetRotationY} position={[
+        <group
+            rotation-y={props.helmetRotationY}
+            position={[
                 props.helmetPositionX,
-                props.helmetPositionY, 
-                props.helmetPositionZ
-            ]}>
+                props.helmetPositionY,
+                props.helmetPositionZ,
+            ]}
+        >
             <primitive scale={[1.5, 1.5, 1.5]} object={scene} />
         </group>
-    )
-}
+    );
+};
 
-const Environment =  (props : EnvironmentProps) => {
-    const {gl, scene} = useThree() 
-    scene.background = props.envMap
-    return null
-}
+const Environment = (props: EnvironmentProps) => {
+    const { gl, scene } = useThree();
+    scene.background = props.envMap;
+    return null;
+};
 
 export default function SceneTwentyThree(props: SceneProps) {
-    const loadingManager = useMemo(() => new THREE.LoadingManager(), [])
-    const cubeTextureLoader = useMemo(() => new THREE.CubeTextureLoader(loadingManager), [
-        px,
-        nx,
-        py,
-        ny,
-        pz,
-        nz
-    ])
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), []);
+    const cubeTextureLoader = useMemo(
+        () => new THREE.CubeTextureLoader(loadingManager),
+        [px, nx, py, ny, pz, nz]
+    );
     const environmentMapTexture = cubeTextureLoader.load([
         px,
         nx,
         py,
         ny,
         pz,
-        nz
-    ])
+        nz,
+    ]);
 
-    environmentMapTexture.encoding = THREE.sRGBEncoding
+    environmentMapTexture.encoding = THREE.sRGBEncoding;
 
     return (
         <scene>
             <directionalLight
                 castShadow={true}
-                color={'#ffffff'}
+                color={"#ffffff"}
                 shadow-normalBias={0.05}
                 intensity={props.lightIntensity}
                 position={[
-                            props.lightPositionX, 
-                            props.lightPositionY, 
-                            props.lightPositionZ
-                        ]}
+                    props.lightPositionX,
+                    props.lightPositionY,
+                    props.lightPositionZ,
+                ]}
             />
             <Suspense fallback={null}>
-                <Environment
-                    envMap={environmentMapTexture}
-                />
+                <Environment envMap={environmentMapTexture} />
                 {/* <FlightHelmet
                     helmetPositionX={props.helmetPositionX}
                     helmetPositionY={props.helmetPositionY}
@@ -148,5 +149,5 @@ export default function SceneTwentyThree(props: SceneProps) {
             </Suspense>
             <CameraControls />
         </scene>
-    )
+    );
 }

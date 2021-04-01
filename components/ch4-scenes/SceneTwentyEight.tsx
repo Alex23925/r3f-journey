@@ -57,6 +57,7 @@ const LeePerry = () => {
         ) {
             child.material.map = mapTexture;
             child.material.normalMap = normalTexture;
+            child.material.needsUpdate = true;
             child.material.envMapIntensity = 5;
             child.castShadow = true;
             child.receiveShadow = true;
@@ -64,9 +65,9 @@ const LeePerry = () => {
     });
 
     return (
-        <mesh rotation-y={Math.PI * 0.5} receiveShadow={true} ref={headRef}>
+        <group rotation-y={Math.PI * 0.5} receiveShadow={true} ref={headRef}>
             <primitive object={scene} />
-        </mesh>
+        </group>
     );
 };
 
@@ -95,8 +96,18 @@ export default function SceneTwentyEight(props: SceneProps) {
 
     return (
         <>
-            <ambientLight />
-            <pointLight position={[10, 10, 10]} />
+            {/* <ambientLight />
+            <pointLight position={[10, 10, 10]} /> */}
+            <directionalLight
+                castShadow={true}
+                shadow-mapSize-width={1024}
+                shadow-mapSize-height={1024}
+                shadow-camera-far={15}
+                intensity={3}
+                color={"#ffffff"}
+                shadow-normalBias={0.05}
+                position={[0.25, 2, -2.25]}
+            />
             <Suspense fallback={null}>
                 <LeePerry />
                 <Environment envMap={environmentMapTexture} />
