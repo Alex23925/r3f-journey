@@ -86,7 +86,7 @@ const FlightHelmet = (props : FlightHelmetProps) => {
                 props.helmetPositionY, 
                 props.helmetPositionZ
             ]}>
-            <primitive scale={[10.5, 10.5, 10.5]} object={scene} />
+            <primitive scale={[1.5, 1.5, 1.5]} object={scene} />
         </group>
     )
 }

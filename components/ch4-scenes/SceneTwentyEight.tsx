@@ -1,7 +1,19 @@
-import React, { useRef, useState, useEffect } from "react";
-import { MeshProps, useFrame } from "react-three-fiber";
-import type { Mesh } from "three";
+import React, { useRef, useState, useMemo, Suspense } from "react";
+import { useThree, useFrame } from "react-three-fiber";
+import type { Group, Mesh } from "three";
 import CameraControls from "../CameraControls";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
+import HeadUrl from "../../static/models/LeePerrySmith/LeePerrySmith.glb";
+import headImg from "../../static/models/LeePerrySmith/color.jpg";
+import normalImg from "../../static/models/LeePerrySmith/normal.jpg";
+
+import px from "../../static/textures/environmentMaps/0/px.jpg";
+import nx from "../../static/textures/environmentMaps/0/nx.jpg";
+import py from "../../static/textures/environmentMaps/0/py.jpg";
+import ny from "../../static/textures/environmentMaps/0/ny.jpg";
+import pz from "../../static/textures/environmentMaps/0/pz.jpg";
+import nz from "../../static/textures/environmentMaps/0/nz.jpg";
 
 interface SceneProps {
     elevation: number;
@@ -17,51 +29,78 @@ interface BoxProps {
     wireframe: boolean;
 }
 
-const Box = (props: BoxProps) => {
-    let elevation = props.elevation;
-    let color = props.color;
-    let hoverColor = props.hoverColor;
-    // This reference will give us direct access to the mesh
-    const mesh = useRef<Mesh>();
-    // Set up state for the hovered and active state
-    const [hovered, setHover] = useState(false);
-    const [active, setActive] = useState(false);
+interface EnvironmentProps {
+    envMap: THREE.CubeTexture;
+}
 
-    // Rotate mesh every frame, this is outside of React without overhead
-    useFrame(() => {
-        if (mesh.current)
-            mesh.current.rotation.x = mesh.current.rotation.y += 0.001;
+const LeePerry = () => {
+    // Textures
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), []);
+    const mapTexture = useMemo(
+        () => new THREE.TextureLoader(loadingManager).load(headImg),
+        [headImg]
+    );
+    mapTexture.encoding = THREE.sRGBEncoding;
+
+    const normalTexture = useMemo(
+        () => new THREE.TextureLoader(loadingManager).load(normalImg),
+        [normalImg]
+    );
+
+    const headRef = useRef<Group>();
+    const { scene } = useGLTF(HeadUrl);
+
+    scene.traverse((child) => {
+        if (
+            child instanceof THREE.Mesh &&
+            child.material instanceof THREE.MeshStandardMaterial
+        ) {
+            child.material.map = mapTexture;
+            child.material.normalMap = normalTexture;
+            child.material.envMapIntensity = 5;
+            child.castShadow = true;
+            child.receiveShadow = true;
+        }
     });
 
     return (
-        <mesh
-            ref={mesh}
-            position={[0, elevation, 0]}
-            scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-            onClick={(event) => setActive(!active)}
-            onPointerOver={(event) => setHover(true)}
-            onPointerOut={(event) => setHover(false)}
-        >
-            <boxBufferGeometry args={[1, 1, 1]} />
-            <meshStandardMaterial
-                wireframe={props.wireframe}
-                color={hovered ? hoverColor : color}
-            />
+        <mesh rotation-y={Math.PI * 0.5} receiveShadow={true} ref={headRef}>
+            <primitive object={scene} />
         </mesh>
     );
 };
 
+const Environment = (props: EnvironmentProps) => {
+    const { gl, scene } = useThree();
+    scene.background = props.envMap;
+    return null;
+};
+
 export default function SceneTwentyEight(props: SceneProps) {
+    const loadingManager = useMemo(() => new THREE.LoadingManager(), []);
+    const cubeTextureLoader = useMemo(
+        () => new THREE.CubeTextureLoader(loadingManager),
+        [px, nx, py, ny, pz, nz]
+    );
+    const environmentMapTexture = cubeTextureLoader.load([
+        px,
+        nx,
+        py,
+        ny,
+        pz,
+        nz,
+    ]);
+
+    environmentMapTexture.encoding = THREE.sRGBEncoding;
+
     return (
         <>
             <ambientLight />
             <pointLight position={[10, 10, 10]} />
-            <Box
-                elevation={props.elevation}
-                color={props.color}
-                hoverColor={props.hoverColor}
-                wireframe={props.wireframe}
-            />
+            <Suspense fallback={null}>
+                <LeePerry />
+                <Environment envMap={environmentMapTexture} />
+            </Suspense>
             <CameraControls />
         </>
     );
