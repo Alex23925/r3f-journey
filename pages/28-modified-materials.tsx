@@ -28,7 +28,7 @@ export default function debugUI10() {
                 lessonNum={28}
                 chNum={4}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(4, 1, -4)}>
+                <CanvasLayout cameraPosition={new THREE.Vector3(5, 1, -5)}>
                     <SceneTwentyEight
                         elevation={elevation}
                         wireframe={wireframe}

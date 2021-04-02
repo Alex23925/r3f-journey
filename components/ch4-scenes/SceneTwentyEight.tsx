@@ -50,15 +50,117 @@ const LeePerry = () => {
     const headRef = useRef<Group>();
     const { scene } = useGLTF(HeadUrl);
 
+    // UNIFORMS
+    const customUniforms = useMemo(() => {
+        return {
+            uTime: { value: 0 },
+        };
+    }, []);
+
+    // Animations
+    useFrame((_) => {
+        let time = _.clock.getElapsedTime();
+        customUniforms.uTime.value = time;
+    });
+
+    const material = useMemo(() => new THREE.MeshStandardMaterial(), []);
+    material.map = mapTexture;
+    material.normalMap = normalTexture;
+    material.needsUpdate = true;
+    material.envMapIntensity = 5;
+
+    const depthMaterial = useMemo(
+        () =>
+            new THREE.MeshDepthMaterial({
+                depthPacking: THREE.RGBADepthPacking,
+            }),
+        []
+    );
+
+    material.onBeforeCompile = (shader) => {
+        shader.uniforms.uTime = customUniforms.uTime;
+
+        shader.vertexShader = shader.vertexShader.replace(
+            "#include <common>",
+            `
+                #include <common>
+
+                uniform float uTime;
+
+                mat2 rotate2d(float _angle){
+                    return mat2(cos(_angle),-sin(_angle),
+                    sin(_angle),cos(_angle));
+                }
+
+
+            `
+        );
+
+        shader.vertexShader = shader.vertexShader.replace(
+            "#include <beginnormal_vertex>",
+            `
+                #include <beginnormal_vertex>
+                 
+                float angle = (position.y + uTime) * 0.2;
+                mat2 rotateMatrix = rotate2d(angle);
+
+                objectNormal.xz = rotateMatrix * objectNormal.xz;
+
+            `
+        );
+
+        shader.vertexShader = shader.vertexShader.replace(
+            "#include <begin_vertex>",
+            `
+                #include <begin_vertex>
+
+                transformed.xz = rotateMatrix * transformed.xz;
+
+            `
+        );
+    };
+
+    depthMaterial.onBeforeCompile = (shader) => {
+        shader.uniforms.uTime = customUniforms.uTime;
+
+        shader.vertexShader = shader.vertexShader.replace(
+            "#include <common>",
+            `
+                #include <common>
+
+                uniform float uTime;
+
+                mat2 rotate2d(float _angle){
+                    return mat2(cos(_angle),-sin(_angle),
+                    sin(_angle),cos(_angle));
+                }
+
+
+            `
+        );
+
+        shader.vertexShader = shader.vertexShader.replace(
+            "#include <begin_vertex>",
+            `
+                #include <begin_vertex>
+
+                
+                float angle = (position.y + uTime) * 0.2;
+                mat2 rotateMatrix = rotate2d(angle);
+
+                transformed.xz = rotateMatrix * transformed.xz;
+
+            `
+        );
+    };
+
     scene.traverse((child) => {
+        child.customDepthMaterial = depthMaterial;
         if (
             child instanceof THREE.Mesh &&
             child.material instanceof THREE.MeshStandardMaterial
         ) {
-            child.material.map = mapTexture;
-            child.material.normalMap = normalTexture;
-            child.material.needsUpdate = true;
-            child.material.envMapIntensity = 5;
+            child.material = material;
             child.castShadow = true;
             child.receiveShadow = true;
         }
@@ -109,6 +211,14 @@ export default function SceneTwentyEight(props: SceneProps) {
                 position={[0.25, 2, -2.25]}
             />
             <Suspense fallback={null}>
+                <mesh
+                    receiveShadow={true}
+                    rotation-y={Math.PI}
+                    position={[0, -5, 5]}
+                >
+                    <planeBufferGeometry args={[15, 15, 15]} />
+                    <meshStandardMaterial />
+                </mesh>
                 <LeePerry />
                 <Environment envMap={environmentMapTexture} />
             </Suspense>
