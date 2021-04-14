@@ -142,9 +142,11 @@ void main()
 {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
+    // Big Details
     float elevation = sin(modelPosition.x * uFrequency.x + uTime * uBigWavesSpeed) * 
                       sin(modelPosition.z * uFrequency.y + uTime * uBigWavesSpeed) * uBigWavesElevation;
 
+    // Smaller details layed on top of the big details
     for(float i = 1.0; i <= 5.0; i++) {
         elevation -= abs(fbm(vec3(modelPosition.xz * 3.0 * i, uTime * .2)) * .15 / i);
     }

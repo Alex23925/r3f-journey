@@ -169,7 +169,16 @@ export default function Layout({
                     </div>
                     <div className="link">
                         <Link href="/28-modified-materials">
-                            <a className="link--styles">28. Modified Materials</a>
+                            <a className="link--styles">
+                                28. Modified Materials
+                            </a>
+                        </Link>
+                    </div>
+                    <div className="link">
+                        <Link href="/29-post-processing">
+                            <a className="link--styles">
+                                29. Post-Processing
+                            </a>
                         </Link>
                     </div>
                 </motion.section>

@@ -114,7 +114,7 @@ const LeePerry = () => {
             `
                 #include <begin_vertex>
 
-                transformed.xz = rotateMatrix * transformed.xz;
+                transformed.y += 5.0;
 
             `
         );

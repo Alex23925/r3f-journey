@@ -1,11 +1,13 @@
 import Layout from "../components/Layout";
 import CanvasLayout from "../components/CanvasLayout";
+import { useThree } from "react-three-fiber";
 import React, { useState } from "react";
 import * as THREE from "three";
 import { useControls } from "leva";
-import SceneTwentyEight from "../components/ch4-scenes/SceneTwentyEight";
+import SceneTwentyNine from "../components/ch5-scenes/SceneTwentyNine";
+import PostProcess from "../components/post-processing/PostProcess";
 
-export default function modifiedMaterials28() {
+export default function postProcessing29() {
     const { elevation, wireframe, color, hoverColor } = useControls({
         elevation: {
             value: 0,
@@ -23,18 +25,19 @@ export default function modifiedMaterials28() {
     return (
         <>
             <Layout
-                lessonName=".28 Modified Materials"
-                lessonLink="/28-modified-materials"
-                lessonNum={28}
-                chNum={4}
+                lessonName=".29 Post Processing"
+                lessonLink="/29-post-processing"
+                lessonNum={29}
+                chNum={5}
             >
-                <CanvasLayout cameraPosition={new THREE.Vector3(5, 1, -5)}>
-                    <SceneTwentyEight
+                <CanvasLayout cameraPosition={new THREE.Vector3(2, 1, -2)}>
+                    <SceneTwentyNine
                         elevation={elevation}
                         wireframe={wireframe}
                         color={color}
                         hoverColor={hoverColor}
                     />
+                    <PostProcess />
                 </CanvasLayout>
             </Layout>
         </>
